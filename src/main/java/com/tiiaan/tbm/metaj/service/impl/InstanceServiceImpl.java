@@ -143,7 +143,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
 
     @Override
-    public Result queryInstancesOrderBy(Integer curr, String byWhat) {
+    public Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health) {
         //先去缓存取
         //String key = CACHE_INSTANCES_PAGE + curr;
         //String json = stringRedisTemplate.opsForValue().get(key);
@@ -156,8 +156,12 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         //if (json != null) {
         //    return null;
         //}
-
-        List<Long> ids = instanceMapper.queryIdsOrderBy((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        List<Long> ids = null;
+        if (health == -1) {
+            ids = instanceMapper.queryIdsOrderBy((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        } else {
+            ids = instanceMapper.queryIdsOrderByWithHealth((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
+        }
         ArrayList<Instance> instances = new ArrayList<>();
         for (Long id : ids) {
             instances.add(this.getInstanceByIdFromCache(id));
@@ -187,7 +191,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
 
     @Override
-    public Result queryInstancesMe(Integer curr, String byWhat) {
+    public Result queryInstancesMe(Integer curr, String byWhat, Integer health) {
         Long userId = UserHolder.getUser().getId();
         String key = USER_WATCHING_KEY + userId;
         Set<String> idStrs = stringRedisTemplate.opsForSet().members(key);
@@ -196,7 +200,12 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         }
         List<Long> ids = idStrs.stream().map(Long::valueOf).collect(Collectors.toList());
 
-        List<Long> idsRes = instanceMapper.queryIdsOfMeOrderBy(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        List<Long> idsRes = null;
+        if (health == -1) {
+            idsRes = instanceMapper.queryIdsOfMeOrderBy(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        } else {
+            idsRes = instanceMapper.queryIdsOfMeOrderByWithHealth(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
+        }
         ArrayList<Instance> instances = new ArrayList<>();
         for (Long id : idsRes) {
             instances.add(this.getInstanceByIdFromCache(id));

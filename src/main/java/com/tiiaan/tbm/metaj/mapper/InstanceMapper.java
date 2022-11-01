@@ -20,7 +20,12 @@ public interface InstanceMapper extends BaseMapper<Instance> {
 
     List<CountDTO> queryCountGroupByHealth();
 
+    List<Long> queryIdsOrderByWithHealth(@Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("byWhat") String byWhat, @Param("health") Integer health);
+
+    List<Long> queryIdsOfMeOrderByWithHealth(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("byWhat") String byWhat, @Param("health") Integer health);
+
     List<Long> queryIdsOrderBy(@Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("byWhat") String byWhat);
 
     List<Long> queryIdsOfMeOrderBy(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("byWhat") String byWhat);
+
 }

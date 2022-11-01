@@ -18,6 +18,7 @@ public class UserDTO {
     private Long id;
     private String name;
     private String avatar;
+    private Integer level;
 
 
 }
