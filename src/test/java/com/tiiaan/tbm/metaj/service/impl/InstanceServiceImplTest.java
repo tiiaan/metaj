@@ -43,13 +43,16 @@ public class InstanceServiceImplTest {
         Random random = new Random();
 
         String[] names = {
-                "上海地铁轨道交通机场联络线 隧道股份 1501 号",
-                "苏州地铁轨道交通 65 号线 (左线) 中铁装备 2608 号",
-                "上海地铁轨道交通 92 号线 (环线) 隧道股份 1563 号",
-                "上海地铁轨道交通环线洲海路区间 市政建设 128 号",
-                "苏州地铁轨道交通 66 号线二期土建 中铁装备 2828 号"
+                "苏州地铁轨道交通 82 号线 (左线) 中铁装备 2918 号",
+                "上海地铁 92 号线 隧道股份 2018 号",
+                "苏州地铁轨道交通 66 号线三期 中铁装备 2111 号",
+                "崇明岛隧道 隧道股份 2282 号",
+                "上海地铁轨道交通 85 号线 隧道股份 2256 号",
+                "苏州地铁轨道交通 90 号线 (西环线) 市政 156 号",
+                "莫干山隧道二期工程 中国铁建 8801 号",
         };
-        for (int i = 0; i < 5; i++) {
+
+        for (int i = 0; i < 7; i++) {
             int count = random.nextInt(50000) + 9000;
             InstanceFormDTO instance = InstanceFormDTO.builder().project(names[i])
                     .segments(count).mileage((Long) Math.round(count * 1.5)).longitude(30.532772 + random.nextInt(15)).latitude(120.124219 + random.nextInt(15)).build();

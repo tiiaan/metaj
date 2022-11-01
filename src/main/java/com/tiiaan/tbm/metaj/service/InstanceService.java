@@ -21,7 +21,9 @@ public interface InstanceService extends IService<Instance> {
 
     Result queryInstances(Integer curr);
 
-    Result queryInstancesMe(Integer curr);
+    Result queryInstancesOrderBy(Integer curr, String byWhat);
+
+    Result queryInstancesMe(Integer curr, String byWhat);
 
     Result watchInstance(Long id);
 

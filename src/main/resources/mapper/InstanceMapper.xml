@@ -36,4 +36,15 @@
         <result column="health" property="health"/>
         <result column="cnt" property="cnt"/>
     </resultMap>
+
+    <select id="queryIdsOrderBy" resultType="java.lang.Long">
+        SELECT id FROM tb_instance ORDER BY ${byWhat} LIMIT #{start}, #{pageSize}
+    </select>
+
+    <select id="queryIdsOfMeOrderBy" resultType="java.lang.Long">
+        SELECT id from tb_instance WHERE id IN
+        <foreach collection="idSet" item="id" open="(" close=")" separator=",">#{id}</foreach>
+        ORDER BY ${byWhat} LIMIT #{start}, #{pageSize}
+    </select>
+
 </mapper>

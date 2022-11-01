@@ -42,9 +42,17 @@ public class InstanceController {
     }
 
 
-    @GetMapping("/watching/of/me")
-    public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
-        return instanceService.queryInstancesMe(curr);
+    @GetMapping("/inorder")
+    public Result queryInstancesOrderBy(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
+                                 @RequestParam(value = "by", defaultValue = "id") String byWhat) {
+        return instanceService.queryInstancesOrderBy(curr, byWhat);
+    }
+
+
+    @GetMapping("/watching/of/me/inorder")
+    public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
+                                   @RequestParam(value = "by", defaultValue = "id") String byWhat) {
+        return instanceService.queryInstancesMe(curr, byWhat);
     }
 
 

@@ -63,6 +63,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     private InstanceMapper instanceMapper;
 
 
+
     @Override
     public Result queryInstanceById(Long id) {
         //return Result.ok(getById(id));
@@ -72,6 +73,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         //fillInstanceWatching(instance);
         return Result.ok(instance);
     }
+
 
 
     @Transactional
@@ -89,50 +91,37 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     }
 
 
+
     /**
      * 带缓存的分页查询
      * @param curr
      * @return com.tiiaan.tbm.metaj.dto.Result
      * @author tiiaan Email:tiiaan.w@gmail.com
      */
-    @Override
-    public Result queryInstances(Integer curr) {
-        //先去缓存取
-        String key = CACHE_INSTANCES_PAGE + curr;
-        String json = stringRedisTemplate.opsForValue().get(key);
-        if (json != null && json.length() != 0) {
-            log.info("cache");
-            List<Instance> instances = JSONUtil.toList(json, Instance.class);
-            instances.forEach(this::fillInstanceWatching);
-            return Result.ok(instances);
-        }
-        if (json != null) {
-            return null;
-        }
-        //如果缓存中没有，就去查询
-        Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        if (page == null) {
-            stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
-            return null;
-        }
-        List<Instance> instances = page.getRecords();
-        //补充当前用户的watch信息
-        instances.forEach(this::fillInstanceWatching);
-        stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
-        return Result.ok(instances);
-    }
-
-
-    //
     //@Override
     //public Result queryInstances(Integer curr) {
+    //    //先去缓存取
+    //    String key = CACHE_INSTANCES_PAGE + curr;
+    //    String json = stringRedisTemplate.opsForValue().get(key);
+    //    if (json != null && json.length() != 0) {
+    //        log.info("cache");
+    //        List<Instance> instances = JSONUtil.toList(json, Instance.class);
+    //        instances.forEach(this::fillInstanceWatching);
+    //        return Result.ok(instances);
+    //    }
+    //    if (json != null) {
+    //        return null;
+    //    }
+    //    //如果缓存中没有，就去查询
     //    Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
     //    if (page == null) {
-    //        return Result.ok(Collections.emptyList());
+    //        stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
+    //        return null;
     //    }
     //    List<Instance> instances = page.getRecords();
     //    //补充当前用户的watch信息
     //    instances.forEach(this::fillInstanceWatching);
+    //    stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
     //    return Result.ok(instances);
     //}
 
@@ -140,7 +129,65 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
 
     @Override
-    public Result queryInstancesMe(Integer curr) {
+    public Result queryInstances(Integer curr) {
+        Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+        if (page == null) {
+            return Result.ok(Collections.emptyList());
+        }
+        List<Instance> instances = page.getRecords();
+        //补充当前用户的watch信息
+        instances.forEach(this::fillInstanceWatching);
+        return Result.ok(instances);
+    }
+
+
+
+    @Override
+    public Result queryInstancesOrderBy(Integer curr, String byWhat) {
+        //先去缓存取
+        //String key = CACHE_INSTANCES_PAGE + curr;
+        //String json = stringRedisTemplate.opsForValue().get(key);
+        //if (json != null && json.length() != 0) {
+        //    log.info("cache");
+        //    List<Instance> instances = JSONUtil.toList(json, Instance.class);
+        //    instances.forEach(this::fillInstanceWatching);
+        //    return Result.ok(instances);
+        //}
+        //if (json != null) {
+        //    return null;
+        //}
+
+        List<Long> ids = instanceMapper.queryIdsOrderBy((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        ArrayList<Instance> instances = new ArrayList<>();
+        for (Long id : ids) {
+            instances.add(this.getInstanceByIdFromCache(id));
+        }
+        return Result.ok(instances);
+        //
+        ////如果缓存中没有，就去查询
+        //Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+        //if (page == null) {
+        //    stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
+        //    return null;
+        //}
+        //List<Instance> instances = page.getRecords();
+        ////补充当前用户的watch信息
+        //instances.forEach(this::fillInstanceWatching);
+        //stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
+        //return Result.ok(instances);
+    }
+
+
+    private Instance getInstanceByIdFromCache(Long id) {
+        Instance instance = cacheClient.queryWithMutex(
+                CACHE_INSTANCE_KEY, id, Instance.class, this::getById, CACHE_INSTANCE_TTL, TTL_UNIT);
+        fillInstanceWatching(instance);
+        return instance;
+    }
+
+
+    @Override
+    public Result queryInstancesMe(Integer curr, String byWhat) {
         Long userId = UserHolder.getUser().getId();
         String key = USER_WATCHING_KEY + userId;
         Set<String> idStrs = stringRedisTemplate.opsForSet().members(key);
@@ -148,11 +195,21 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
             return Result.ok(Collections.emptyList());
         }
         List<Long> ids = idStrs.stream().map(Long::valueOf).collect(Collectors.toList());
-        Page<Instance> page = this.query().in("id", ids).page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        List<Instance> instances = page.getRecords();
-        instances.forEach(this::fillInstanceWatching);
+
+        List<Long> idsRes = instanceMapper.queryIdsOfMeOrderBy(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+        ArrayList<Instance> instances = new ArrayList<>();
+        for (Long id : idsRes) {
+            instances.add(this.getInstanceByIdFromCache(id));
+        }
         return Result.ok(instances);
+
+        //Page<Instance> page = this.query().in("id", ids).page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+        //List<Instance> instances = page.getRecords();
+        //instances.forEach(this::fillInstanceWatching);
+        //return Result.ok(instances);
     }
+
+
 
 
 
@@ -191,6 +248,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     //    }
     //    return Result.ok();
     //}
+
 
 
 
@@ -240,6 +298,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     }
 
 
+
     @Override
     public Result queryInstancesCount() {
         //0停机, 1健康, 2报警, 3故障
@@ -252,6 +311,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     }
 
 
+
     @Override
     public Result queryWatchingCount(Long id) {
         String instKey = INSTANCE_WATCHING_KEY + id;
@@ -262,6 +322,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         Integer count = getById(id).getWatching();
         return Result.ok(count);
     }
+
 
 
     @Override

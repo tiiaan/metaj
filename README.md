@@ -9,3 +9,4 @@
 - [[5a63913]](https://github.com/tiiaan/metaj/commit/5a639132f7ac6ce531bdedb5f40adea3a36ed9c7) 用户登录注册接口、登录校验拦截器、关注接口
 - [[8458ff2]](https://github.com/tiiaan/metaj/commit/8458ff267d62ed10bb2728019fdc81fe8cd6821d) 修复关注接口缓存不一致bug
 - [[3b3969b]](https://github.com/tiiaan/metaj/commit/3b3969b31bbcc119e62f27b0677301a4eb4d0b98) 实例分页查询、分组聚合查询
+- [[9251854]](https://github.com/tiiaan/metaj/commit/9251854f82f2435aaefd96a62301107af7412d3c) :bug: 修复关注接口查询缓存不一致bug
