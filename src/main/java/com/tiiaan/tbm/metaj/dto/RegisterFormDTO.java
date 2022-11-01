@@ -18,8 +18,9 @@ public class RegisterFormDTO {
 
     private String name;
     private String pwd;
-    private String email;
     private String phone;
+    private String email;
+    private String avatar;
     private String dept;
     private String role;
 

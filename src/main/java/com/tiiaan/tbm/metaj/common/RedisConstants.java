@@ -13,7 +13,7 @@ public class RedisConstants {
     public static final TimeUnit TTL_UNIT = TimeUnit.SECONDS;
 
     public static final String USER_TOKEN = "user:tok:";
-    public static final Long USER_TOKEN_TTL = 172800L;
+    public static final Long USER_TOKEN_TTL = 1800L;
 
     public static final String STATUS_KEY = "stat:";
     public static final Long STATUS_TTL = 60000L;
@@ -36,7 +36,9 @@ public class RedisConstants {
     public static final String USER_WATCHING_KEY = "user:watch:";
 
     public static final String CACHE_INSTANCE_KEY = "cache:inst:";
-    public static final Long CACHE_INSTANCE_TTL = 4320L;
+    public static final Long CACHE_INSTANCE_TTL = 3600L;
 
+    public static final String CACHE_INSTANCES_PAGE = "cache:inst:page:";
+    public static final Long CACHE_INSTANCES_PAGE_TTL = 3600L;
 
 }

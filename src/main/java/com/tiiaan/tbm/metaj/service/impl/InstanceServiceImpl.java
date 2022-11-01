@@ -4,8 +4,10 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import com.tiiaan.tbm.metaj.cache.CacheClient;
 import com.tiiaan.tbm.metaj.dto.CountDTO;
 import com.tiiaan.tbm.metaj.dto.InstanceFormDTO;
@@ -28,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import static com.tiiaan.tbm.metaj.common.SysConstants.*;
@@ -66,7 +69,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         Instance instance = getById(id);
         //Instance instance = cacheClient.queryWithMutex(
         //        CACHE_INSTANCE_KEY, id, Instance.class, this::getById, CACHE_INSTANCE_TTL, TTL_UNIT);
-        fillInstanceWatching(instance);
+        //fillInstanceWatching(instance);
         return Result.ok(instance);
     }
 
@@ -86,15 +89,53 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     }
 
 
+    /**
+     * 带缓存的分页查询
+     * @param curr
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
     @Override
     public Result queryInstances(Integer curr) {
-        //查询
+        //先去缓存取
+        String key = CACHE_INSTANCES_PAGE + curr;
+        String json = stringRedisTemplate.opsForValue().get(key);
+        if (json != null && json.length() != 0) {
+            log.info("cache");
+            List<Instance> instances = JSONUtil.toList(json, Instance.class);
+            instances.forEach(this::fillInstanceWatching);
+            return Result.ok(instances);
+        }
+        if (json != null) {
+            return null;
+        }
+        //如果缓存中没有，就去查询
         Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+        if (page == null) {
+            stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
+            return null;
+        }
         List<Instance> instances = page.getRecords();
         //补充当前用户的watch信息
         instances.forEach(this::fillInstanceWatching);
+        stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
         return Result.ok(instances);
     }
+
+
+    //
+    //@Override
+    //public Result queryInstances(Integer curr) {
+    //    Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+    //    if (page == null) {
+    //        return Result.ok(Collections.emptyList());
+    //    }
+    //    List<Instance> instances = page.getRecords();
+    //    //补充当前用户的watch信息
+    //    instances.forEach(this::fillInstanceWatching);
+    //    return Result.ok(instances);
+    //}
+
 
 
 
@@ -117,36 +158,69 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
     private void fillInstanceWatching(Instance instance) {
         Long userId = UserHolder.getUser().getId();
-        String key = INSTANCE_WATCHING_KEY + instance.getId();
-        Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
-        instance.setIsWatching(score != null);
+        //String key = INSTANCE_WATCHING_KEY + instance.getId();
+        //Double score = stringRedisTemplate.opsForZSet().score(key, userId.toString());
+        //instance.setIsWatching(score != null);
+        Long id = instance.getId();
+        instance.setIsWatching((Boolean) this.queryIsWatchingByCurrUser(id).getData());
+        instance.setWatching((Integer) this.queryWatchingCount(id).getData());
     }
+
+
+
+    //@Transactional
+    //@Override
+    //public Result watchInstance(Long id) {
+    //    Long userId = UserHolder.getUser().getId();
+    //    String instKey = INSTANCE_WATCHING_KEY + id;
+    //    String userKey = USER_WATCHING_KEY + userId;
+    //    //Double score = stringRedisTemplate.opsForZSet().score(instKey, userId.toString());
+    //    Boolean watched = stringRedisTemplate.opsForSet().isMember(userKey, id.toString());
+    //    if (Boolean.FALSE.equals(watched)) {
+    //        watchService.save(new Watch(userId, id));
+    //        update().setSql("watching = watching + 1").eq("id", id).update();
+    //        stringRedisTemplate.opsForZSet().add(instKey, userId.toString(), System.currentTimeMillis());
+    //        stringRedisTemplate.opsForSet().add(userKey, id.toString());
+    //        log.info("user [{}] watch instance [{}]", userId, id);
+    //    } else {
+    //        watchService.remove(new QueryWrapper<Watch>().eq("user_id", userId).eq("instance_id", id));
+    //        update().setSql("watching = watching - 1").eq("id", id).update();
+    //        stringRedisTemplate.opsForZSet().remove(instKey, userId.toString());
+    //        stringRedisTemplate.opsForSet().remove(userKey, id.toString());
+    //        log.info("user [{}] unwatch instance [{}]", userId, id);
+    //    }
+    //    return Result.ok();
+    //}
 
 
 
     @Transactional
     @Override
     public Result watchInstance(Long id) {
+        //获取用户
         Long userId = UserHolder.getUser().getId();
-        String instKey = INSTANCE_WATCHING_KEY + id;
         String userKey = USER_WATCHING_KEY + userId;
-        //Double score = stringRedisTemplate.opsForZSet().score(instKey, userId.toString());
+        String instKey = INSTANCE_WATCHING_KEY + id;
+        //判断用户是否已经关注过了
         Boolean watched = stringRedisTemplate.opsForSet().isMember(userKey, id.toString());
         if (Boolean.FALSE.equals(watched)) {
-            watchService.save(new Watch(userId, id));
-            update().setSql("watching = watching + 1").eq("id", id).update();
-            stringRedisTemplate.opsForZSet().add(instKey, userId.toString(), System.currentTimeMillis());
+            //watchService.save(new Watch(userId, id));
+            //update().setSql("watching = watching + 1").eq("id", id).update();
+            //stringRedisTemplate.opsForZSet().add(instKey, userId.toString(), System.currentTimeMillis());
+            stringRedisTemplate.opsForValue().increment(instKey);
             stringRedisTemplate.opsForSet().add(userKey, id.toString());
             log.info("user [{}] watch instance [{}]", userId, id);
         } else {
-            watchService.remove(new QueryWrapper<Watch>().eq("user_id", userId).eq("instance_id", id));
-            update().setSql("watching = watching - 1").eq("id", id).update();
-            stringRedisTemplate.opsForZSet().remove(instKey, userId.toString());
+            //watchService.remove(new QueryWrapper<Watch>().eq("user_id", userId).eq("instance_id", id));
+            //update().setSql("watching = watching - 1").eq("id", id).update();
+            //stringRedisTemplate.opsForZSet().remove(instKey, userId.toString());
             stringRedisTemplate.opsForSet().remove(userKey, id.toString());
+            stringRedisTemplate.opsForValue().decrement(instKey);
             log.info("user [{}] unwatch instance [{}]", userId, id);
         }
         return Result.ok();
     }
+
 
 
     @Override
@@ -175,6 +249,31 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
             map.put("h" + countDTO.getHealth(), countDTO.getCnt());
         }
         return Result.ok(map);
+    }
+
+
+    @Override
+    public Result queryWatchingCount(Long id) {
+        String instKey = INSTANCE_WATCHING_KEY + id;
+        String str = stringRedisTemplate.opsForValue().get(instKey);
+        if (str != null && str.length() != 0) {
+            return Result.ok(Integer.valueOf(str));
+        }
+        Integer count = getById(id).getWatching();
+        return Result.ok(count);
+    }
+
+
+    @Override
+    public Result queryIsWatchingByCurrUser(Long id) {
+        Long userId = UserHolder.getUser().getId();
+        String userKey = USER_WATCHING_KEY + userId;
+        Boolean watched = stringRedisTemplate.opsForSet().isMember(userKey, id.toString());
+        if (watched != null) {
+            return Result.ok(Boolean.TRUE.equals(watched));
+        }
+        Integer count = watchService.query().eq("user_id", userId).eq("instance_id", id).count();
+        return Result.ok(count != 0);
     }
 
 

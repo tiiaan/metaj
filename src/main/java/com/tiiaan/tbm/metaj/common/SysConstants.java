@@ -10,6 +10,6 @@ public class SysConstants {
 
     public static final int INSTANCE_NAME_LEN = 20;
 
-    public static final int INSTANCE_PAGE_SIZE = 3;
+    public static final int INSTANCE_PAGE_SIZE = 8;
 
 }

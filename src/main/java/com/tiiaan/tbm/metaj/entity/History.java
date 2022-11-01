@@ -32,8 +32,8 @@ public class History implements Serializable {
     @TableField("instance_id")
     private Long instanceId;
 
-    @TableField("timestamp")
-    private Long timestamp;
+    @TableField("time")
+    private Long time;
 
     @TableField("main_torque")
     private Double mainTorque;

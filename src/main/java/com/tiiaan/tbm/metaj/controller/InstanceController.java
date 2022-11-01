@@ -42,23 +42,55 @@ public class InstanceController {
     }
 
 
-    @GetMapping("/watching/me")
+    @GetMapping("/watching/of/me")
     public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
         return instanceService.queryInstancesMe(curr);
     }
 
 
 
+    /**
+     * 执行关注或者取消关注，取决于当前登陆的用户是否关注过
+     * @param id
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
     @PutMapping("/watch/{id}")
     public Result watchInstance(@PathVariable("id") Long id) {
         return instanceService.watchInstance(id);
     }
 
 
-    @GetMapping("/watching/all/{id}")
+    /**
+     * 查询某一台实例的关注人数
+     * @param id
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    @GetMapping("/watching/count/of/{id}")
+    public Result queryWatchingCount(@PathVariable("id") Long id) {
+        return instanceService.queryWatchingCount(id);
+    }
+
+
+
+    /**
+     * 查询某一台实例是否被当前用户关注
+     * @param id
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    @GetMapping("/is/watching/{id}")
+    public Result queryIsWatchingByCurrUser(@PathVariable("id") Long id) {
+        return instanceService.queryIsWatchingByCurrUser(id);
+    }
+
+
+    @GetMapping("/who/is/watching/{id}")
     public Result queryInstanceWatching(@PathVariable("id") Long id) {
         return instanceService.queryInstanceWatching(id);
     }
+
 
     @GetMapping("/count")
     public Result queryInstancesCount() {

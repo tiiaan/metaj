@@ -33,6 +33,9 @@ public class Issue implements Serializable {
     @TableField("instance_id")
     private Long instanceId;
 
+    @TableField("time")
+    private Long time;
+
     @TableField("level")
     private Integer level;
 

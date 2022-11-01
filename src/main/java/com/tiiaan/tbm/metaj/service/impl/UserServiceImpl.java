@@ -21,7 +21,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
 
@@ -71,16 +73,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
 
+
     @Override
     public Result register(RegisterFormDTO registerFormDTO) {
         String name = registerFormDTO.getName();
         String pwd = registerFormDTO.getPwd();
         registerFormDTO.setPwd(PasswordEncoder.encode(pwd));
-
         User user = BeanUtil.copyProperties(registerFormDTO, User.class);
         save(user);
-        return null;
+        return Result.ok();
     }
+
 
 
     @Override
@@ -104,5 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
         return Result.ok(userDTO);
     }
+
+
 
 }

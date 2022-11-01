@@ -39,7 +39,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
         if (token == null || token.length() == 0) {
             return true;
         }
-        log.info("authorization bingo, got token form header [{}]", token);
+        log.info("got token");
         //2. 拿着token从Redis中取出用户
         String tokenKey = USER_TOKEN + token;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(tokenKey);
