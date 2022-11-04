@@ -19,11 +19,11 @@ public interface InstanceService extends IService<Instance> {
 
     Result addInstance(InstanceFormDTO instanceFormDTO);
 
-    Result queryInstances(Integer curr);
+    Result queryInstances(Integer curr, String orderBy, Integer orderType, Integer health, Boolean watching, Boolean ofMe);
 
-    Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health);
-
-    Result queryInstancesMe(Integer curr, String byWhat, Integer health);
+    //Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health);
+    //
+    //Result queryInstancesMe(Integer curr, String byWhat, Integer health);
 
     Result watchInstance(Long id);
 

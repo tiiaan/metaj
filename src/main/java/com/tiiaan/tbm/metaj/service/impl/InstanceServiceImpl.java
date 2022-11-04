@@ -24,6 +24,7 @@ import com.tiiaan.tbm.metaj.service.SegmentService;
 import com.tiiaan.tbm.metaj.service.UserService;
 import com.tiiaan.tbm.metaj.service.WatchService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,12 +67,10 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
     @Override
     public Result queryInstanceById(Long id) {
-        //return Result.ok(getById(id));
-        Instance instance = getById(id);
+        return Result.ok(getById(id));
         //Instance instance = cacheClient.queryWithMutex(
         //        CACHE_INSTANCE_KEY, id, Instance.class, this::getById, CACHE_INSTANCE_TTL, TTL_UNIT);
         //fillInstanceWatching(instance);
-        return Result.ok(instance);
     }
 
 
@@ -129,20 +128,50 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
 
     @Override
-    public Result queryInstances(Integer curr) {
-        Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        if (page == null) {
-            return Result.ok(Collections.emptyList());
+    public Result queryInstances(Integer curr,
+                                 String orderBy,
+                                 Integer orderType,
+                                 Integer health,
+                                 Boolean watching,
+                                 Boolean ofMe) {
+        //Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+        //if (page == null) {
+        //    return Result.ok(Collections.emptyList());
+        //}
+        //List<Instance> instances = page.getRecords();
+        ////补充当前用户的watch信息
+        //instances.forEach(this::fillInstanceWatching);
+        //return Result.ok(instances);
+        //List<Long> queryIdsDynamic(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("orderBy") String orderBy, @Param("orderType") String orderType, @Param("health") Integer health, @Param("userId") Integer userId);
+        Long userId = UserHolder.getUser().getId();
+        List<Long> idSet = null;
+        if (watching) {
+            String key = USER_WATCHING_KEY + userId;
+            Set<String> idStrs = stringRedisTemplate.opsForSet().members(key);
+            if (idStrs == null || idStrs.isEmpty()) {
+                return Result.ok(Collections.emptyList());
+            }
+            idSet = idStrs.stream().map(Long::valueOf).collect(Collectors.toList());
         }
-        List<Instance> instances = page.getRecords();
-        //补充当前用户的watch信息
-        instances.forEach(this::fillInstanceWatching);
+        String type = orderType == 0 ? "ASC" : "DESC";
+        Integer start = (curr - 1) * INSTANCE_PAGE_SIZE;
+        userId = ofMe ? userId : -1;
+        List<Long> ids = instanceMapper.queryIdsDynamic(
+                idSet,
+                start,
+                INSTANCE_PAGE_SIZE,
+                orderBy, type,
+                health,
+                userId);
+        ArrayList<Instance> instances = new ArrayList<>();
+        for (Long id : ids) {
+            instances.add(this.getInstanceByIdFromCache(id));
+        }
         return Result.ok(instances);
     }
 
 
 
-    @Override
     public Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health) {
         //先去缓存取
         //String key = CACHE_INSTANCES_PAGE + curr;
@@ -190,7 +219,6 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     }
 
 
-    @Override
     public Result queryInstancesMe(Integer curr, String byWhat, Integer health) {
         Long userId = UserHolder.getUser().getId();
         String key = USER_WATCHING_KEY + userId;

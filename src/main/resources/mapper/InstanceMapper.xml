@@ -57,4 +57,18 @@
         ORDER BY ${byWhat} LIMIT #{start}, #{pageSize}
     </select>
 
+
+
+    <select id="queryIdsDynamic" resultType="java.lang.Long">
+        SELECT id FROM tb_instance
+        <where>
+            <if test="health != -1">health = #{health} </if>
+            <if test="userId != -1">AND user_id = #{userId} </if>
+            <if test="idSet != null">
+                AND id IN <foreach collection="idSet" item="id" open="(" close=")" separator=",">#{id}</foreach>
+            </if>
+        </where>
+        ORDER BY ${orderBy} ${orderType} LIMIT #{start}, #{pageSize}
+    </select>
+
 </mapper>

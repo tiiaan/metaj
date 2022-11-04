@@ -28,4 +28,5 @@ public interface InstanceMapper extends BaseMapper<Instance> {
 
     List<Long> queryIdsOfMeOrderBy(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("byWhat") String byWhat);
 
+    List<Long> queryIdsDynamic(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("orderBy") String orderBy, @Param("orderType") String orderType, @Param("health") Integer health, @Param("userId") Long userId);
 }

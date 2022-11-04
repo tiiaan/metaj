@@ -36,26 +36,37 @@ public class InstanceController {
     }
 
 
-    @GetMapping
-    public Result queryInstances(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
-        return instanceService.queryInstances(curr);
+    @GetMapping("/query")
+    public Result queryInstances(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
+                                 @RequestParam(value = "orderBy", defaultValue = "id") String orderBy,
+                                 @RequestParam(value = "orderType", defaultValue = "0") Integer orderType,
+                                 @RequestParam(value = "health", defaultValue = "-1") Integer health,
+                                 @RequestParam(value = "watching", defaultValue = "false") Boolean watching,
+                                 @RequestParam(value = "ofMe", defaultValue = "false") Boolean ofMe) {
+        return instanceService.queryInstances(curr, orderBy, orderType, health, watching, ofMe);
     }
 
 
-    @GetMapping("/inorder")
-    public Result queryInstancesOrderBy(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
-                                        @RequestParam(value = "by", defaultValue = "id") String byWhat,
-                                        @RequestParam(value = "health", defaultValue = "-1") Integer health) {
-        return instanceService.queryInstancesOrderBy(curr, byWhat, health);
-    }
+    //@GetMapping
+    //public Result queryInstances(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
+    //    return instanceService.queryInstances(curr);
+    //}
 
-
-    @GetMapping("/watching/of/me/inorder")
-    public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
-                                   @RequestParam(value = "by", defaultValue = "id") String byWhat,
-                                   @RequestParam(value = "health", defaultValue = "-1") Integer health) {
-        return instanceService.queryInstancesMe(curr, byWhat, health);
-    }
+    //
+    //@GetMapping("/inorder")
+    //public Result queryInstancesOrderBy(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
+    //                                    @RequestParam(value = "by", defaultValue = "id") String byWhat,
+    //                                    @RequestParam(value = "health", defaultValue = "-1") Integer health) {
+    //    return instanceService.queryInstancesOrderBy(curr, byWhat, health);
+    //}
+    //
+    //
+    //@GetMapping("/watching/of/me/inorder")
+    //public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr,
+    //                               @RequestParam(value = "by", defaultValue = "id") String byWhat,
+    //                               @RequestParam(value = "health", defaultValue = "-1") Integer health) {
+    //    return instanceService.queryInstancesMe(curr, byWhat, health);
+    //}
 
 
 
