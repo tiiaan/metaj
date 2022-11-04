@@ -50,7 +50,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
         UserDTO user = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         UserHolder.saveUser(user);
         //4. 刷新token有效期
-        stringRedisTemplate.expire(token, USER_TOKEN_TTL, TTL_UNIT);
+        stringRedisTemplate.expire(tokenKey, USER_TOKEN_TTL, TTL_UNIT);
         //5. 全部放行
         return true;
     }
