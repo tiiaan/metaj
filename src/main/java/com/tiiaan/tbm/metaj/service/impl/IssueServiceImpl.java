@@ -6,10 +6,12 @@ import cn.hutool.core.util.StrUtil;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.Issue;
 import com.tiiaan.tbm.metaj.event.IssuePublishFeedEvent;
+import com.tiiaan.tbm.metaj.event.IssuePublishInstanceEvent;
 import com.tiiaan.tbm.metaj.event.IssuePublishPersistenceEvent;
 import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.mapper.IssueMapper;
+import com.tiiaan.tbm.metaj.service.InstanceService;
 import com.tiiaan.tbm.metaj.service.IssueService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +45,8 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private ApplicationEventPublisher applicationEventPublisher;
+    @Resource
+    private InstanceService instanceService;
 
 
     @Override
@@ -55,11 +59,16 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         this.save(issue);
         Long issueId = issue.getId();
 
+        //同步修改tb_instance表
+        applicationEventPublisher.publishEvent(new IssuePublishInstanceEvent(this, issue.getInstanceId()));
+
         //异步推送站内消息
         applicationEventPublisher.publishEvent(new IssuePublishFeedEvent(this, issueId));
 
         //异步持久化30分钟数据
-        applicationEventPublisher.publishEvent(new IssuePublishPersistenceEvent(this, issue.getInstanceId(), issue.getTime()));
+        if (issue.getDataset() == 1) {
+            applicationEventPublisher.publishEvent(new IssuePublishPersistenceEvent(this, issue.getInstanceId(), issue.getTime()));
+        }
 
         log.info("publish success issue=[{}]", issueId);
         return Result.ok(issueId);

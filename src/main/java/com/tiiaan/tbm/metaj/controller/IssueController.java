@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.validation.Valid;
 
 /**
  * <p>
@@ -27,7 +28,7 @@ public class IssueController {
     private IssueService issueService;
 
     @PostMapping("/publish")
-    public Result publishIssue(@RequestBody Issue issue) {
+    public Result publishIssue(@Valid @RequestBody Issue issue) {
         return issueService.publishIssue(issue);
     }
 
