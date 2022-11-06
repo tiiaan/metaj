@@ -80,6 +80,9 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     public Result addInstance(InstanceFormDTO instanceFormDTO) {
         Instance instance = BeanUtil.copyProperties(instanceFormDTO, Instance.class);
         instance.setName(RandomUtil.randomString(INSTANCE_NAME_LEN));
+        //Long userId = UserHolder.getUser().getId();
+        //instance.setUserId(userId);
+        instance.setHealth(new Random().nextInt(4));
         save(instance);
         segmentService.save(new Segment(instance));
         Long id = instance.getId();
@@ -134,15 +137,6 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
                                  Integer health,
                                  Boolean watching,
                                  Boolean ofMe) {
-        //Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        //if (page == null) {
-        //    return Result.ok(Collections.emptyList());
-        //}
-        //List<Instance> instances = page.getRecords();
-        ////补充当前用户的watch信息
-        //instances.forEach(this::fillInstanceWatching);
-        //return Result.ok(instances);
-        //List<Long> queryIdsDynamic(@Param("idSet")List<Long> idSet, @Param("start") Integer start, @Param("pageSize") Integer pageSize, @Param("orderBy") String orderBy, @Param("orderType") String orderType, @Param("health") Integer health, @Param("userId") Integer userId);
         Long userId = UserHolder.getUser().getId();
         List<Long> idSet = null;
         if (watching) {

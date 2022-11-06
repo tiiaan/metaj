@@ -12,4 +12,6 @@ public class SysConstants {
 
     public static final int INSTANCE_PAGE_SIZE = 8;
 
+    public static final String IMAGE_UPLOAD_DIR = "/Users/tiiaan/Desktop/upload/";
+
 }

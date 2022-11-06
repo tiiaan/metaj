@@ -1,5 +1,6 @@
 package com.tiiaan.tbm.metaj.dto;
 
+import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,24 +19,28 @@ import java.util.List;
 public class Result {
 
     private Boolean success;
-    private String errorMsg;
+    private String code;
+    private String msg;
     private Object data;
-    private Long total;
 
     public static Result ok(){
         return new Result(true, null, null, null);
     }
 
     public static Result ok(Object data){
-        return new Result(true, null, data, null);
+        return new Result(true, null, null, data);
     }
 
-    public static Result ok(List<?> data, Long total){
-        return new Result(true, null, data, total);
+    public static Result ok(List<?> data){
+        return new Result(true, null, null, data);
     }
 
-    public static Result fail(String errorMsg){
-        return new Result(false, errorMsg, null, null);
+    public static Result fail(String code, String msg){
+        return new Result(false, code, msg, null);
+    }
+
+    public static Result fail(ErrorEnum errorEnum){
+        return new Result(false, errorEnum.getCode(), errorEnum.getMsg(), null);
     }
 
 }

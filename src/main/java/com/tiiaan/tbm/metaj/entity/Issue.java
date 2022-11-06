@@ -45,6 +45,9 @@ public class Issue implements Serializable {
     @TableField("description")
     private String description;
 
+    @TableField("images")
+    private String images;
+
     @TableField("tracking")
     private Integer tracking;
 

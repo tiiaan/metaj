@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author tiiaan Email:tiiaan.w@gmail.com
  * @version 0.0
@@ -18,6 +20,9 @@ import lombok.NoArgsConstructor;
 @Builder
 public class InstanceFormDTO {
 
+    private Long userId;
+
+    @NotNull
     private String project;
 
     private Integer segments;

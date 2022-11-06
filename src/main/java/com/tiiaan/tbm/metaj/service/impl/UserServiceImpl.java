@@ -9,6 +9,7 @@ import com.tiiaan.tbm.metaj.dto.RegisterFormDTO;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.dto.UserDTO;
 import com.tiiaan.tbm.metaj.entity.User;
+import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.mapper.UserMapper;
 import com.tiiaan.tbm.metaj.service.UserService;
@@ -50,15 +51,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         String name = loginFormDTO.getName();
         String pwd = loginFormDTO.getPwd();
         User user = getOne(new QueryWrapper<User>().eq("name", name));
-        if (user == null) {
-            log.info("user not found");
-            return Result.fail("user not found");
-        }
+
+        ErrorEnum.USER_NOT_FOUND.assertNotNull(user);
+
+        //if (user == null) {
+        //    log.info("user not found");
+        //    return Result.fail("user not found");
+        //}
+
         Boolean isMatch = PasswordEncoder.matches(user.getPwd(), pwd);
-        if (Boolean.FALSE.equals(isMatch)) {
-            log.info("error password");
-            return Result.fail("error password");
-        }
+
+        ErrorEnum.INVALID_PASSWORD.assertIsTrue(isMatch);
+
+        //if (Boolean.FALSE.equals(isMatch)) {
+        //    log.info("error password");
+        //    return Result.fail("error password");
+        //}
+
         String token = UUID.randomUUID().toString(true);
         String key = USER_TOKEN + token;
         UserDTO userDTO = BeanUtil.copyProperties(user, UserDTO.class);
@@ -71,6 +80,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         log.info("user login successfully [{}]", token);
         return Result.ok(token);
     }
+
 
 
 

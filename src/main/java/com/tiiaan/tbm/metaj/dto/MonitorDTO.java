@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MonitorDTO {
 
+
     private Long timestamp;
 
     private Byte health;
