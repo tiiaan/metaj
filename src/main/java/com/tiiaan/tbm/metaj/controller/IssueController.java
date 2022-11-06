@@ -38,7 +38,7 @@ public class IssueController {
     }
 
 
-    @PostMapping("/file/delete")
+    @GetMapping("/file/delete")
     public Result deleteFile(@RequestParam("filename") String filename) {
         return issueService.deleteFile(filename);
     }
