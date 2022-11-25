@@ -1,33 +1,30 @@
 package com.tiiaan.tbm.metaj.mapper;
 
-import com.tiiaan.tbm.metaj.entity.IssueCommentEntity;
-import com.tiiaan.tbm.metaj.entity.IssueCommentEntityExample;
+import com.tiiaan.tbm.metaj.entity.IssueComment;
+import com.tiiaan.tbm.metaj.entity.IssueCommentExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
 public interface IssueCommentMapper {
-    long countByExample(IssueCommentEntityExample example);
+    long countByExample(IssueCommentExample example);
 
-    int deleteByExample(IssueCommentEntityExample example);
+    int deleteByExample(IssueCommentExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(IssueCommentEntity record);
+    int insert(IssueComment record);
 
-    int insertSelective(IssueCommentEntity record);
+    int insertSelective(IssueComment record);
 
-    List<IssueCommentEntity> selectByExample(IssueCommentEntityExample example);
+    List<IssueComment> selectByExample(IssueCommentExample example);
 
-    IssueCommentEntity selectByPrimaryKey(Long id);
+    IssueComment selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") IssueCommentEntity record, @Param("example") IssueCommentEntityExample example);
+    int updateByExampleSelective(@Param("record") IssueComment record, @Param("example") IssueCommentExample example);
 
-    int updateByExample(@Param("record") IssueCommentEntity record, @Param("example") IssueCommentEntityExample example);
+    int updateByExample(@Param("record") IssueComment record, @Param("example") IssueCommentExample example);
 
-    int updateByPrimaryKeySelective(IssueCommentEntity record);
+    int updateByPrimaryKeySelective(IssueComment record);
 
-    int updateByPrimaryKey(IssueCommentEntity record);
+    int updateByPrimaryKey(IssueComment record);
 }

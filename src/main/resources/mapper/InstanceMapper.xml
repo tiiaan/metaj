@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tiiaan.tbm.metaj.mapper.InstanceMapper">
-  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.InstanceEntity">
+  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.Instance">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="name" jdbcType="VARCHAR" property="name" />
     <result column="project" jdbcType="VARCHAR" property="project" />
-    <result column="healthy" jdbcType="INTEGER" property="healthy" />
     <result column="segments" jdbcType="INTEGER" property="segments" />
     <result column="mileage" jdbcType="BIGINT" property="mileage" />
+    <result column="health" jdbcType="TINYINT" property="health" />
     <result column="current_segment" jdbcType="INTEGER" property="currentSegment" />
     <result column="issues" jdbcType="INTEGER" property="issues" />
     <result column="unsolved_issues" jdbcType="INTEGER" property="unsolvedIssues" />
     <result column="watching" jdbcType="INTEGER" property="watching" />
     <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
     <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="finished" jdbcType="TINYINT" property="finished" />
   </resultMap>
   <sql id="Example_Where_Clause">
     <where>
@@ -75,10 +74,10 @@
     </where>
   </sql>
   <sql id="Base_Column_List">
-    id, name, project, healthy, segments, mileage, current_segment, issues, unsolved_issues, 
-    watching, create_time, update_time, finished
+    id, name, project, segments, mileage, health, current_segment, issues, unsolved_issues, 
+    watching, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntityExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -102,44 +101,45 @@
     delete from tb_instance
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntityExample">
+  <delete id="deleteByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceExample">
     delete from tb_instance
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    insert into tb_instance (id, name, project, 
-      healthy, segments, mileage, 
-      current_segment, issues, unsolved_issues, 
-      watching, create_time, update_time, 
-      finished)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{project,jdbcType=VARCHAR}, 
-      #{healthy,jdbcType=INTEGER}, #{segments,jdbcType=INTEGER}, #{mileage,jdbcType=BIGINT}, 
-      #{currentSegment,jdbcType=INTEGER}, #{issues,jdbcType=INTEGER}, #{unsolvedIssues,jdbcType=INTEGER}, 
-      #{watching,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{finished,jdbcType=TINYINT})
+  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.Instance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_instance (name, project, segments, 
+      mileage, health, current_segment, 
+      issues, unsolved_issues, watching, 
+      create_time, update_time)
+    values (#{name,jdbcType=VARCHAR}, #{project,jdbcType=VARCHAR}, #{segments,jdbcType=INTEGER}, 
+      #{mileage,jdbcType=BIGINT}, #{health,jdbcType=TINYINT}, #{currentSegment,jdbcType=INTEGER}, 
+      #{issues,jdbcType=INTEGER}, #{unsolvedIssues,jdbcType=INTEGER}, #{watching,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
+  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.Instance">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into tb_instance
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="name != null">
         name,
       </if>
       <if test="project != null">
         project,
       </if>
-      <if test="healthy != null">
-        healthy,
-      </if>
       <if test="segments != null">
         segments,
       </if>
       <if test="mileage != null">
         mileage,
+      </if>
+      <if test="health != null">
+        health,
       </if>
       <if test="currentSegment != null">
         current_segment,
@@ -159,28 +159,22 @@
       <if test="updateTime != null">
         update_time,
       </if>
-      <if test="finished != null">
-        finished,
-      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="name != null">
         #{name,jdbcType=VARCHAR},
       </if>
       <if test="project != null">
         #{project,jdbcType=VARCHAR},
       </if>
-      <if test="healthy != null">
-        #{healthy,jdbcType=INTEGER},
-      </if>
       <if test="segments != null">
         #{segments,jdbcType=INTEGER},
       </if>
       <if test="mileage != null">
         #{mileage,jdbcType=BIGINT},
+      </if>
+      <if test="health != null">
+        #{health,jdbcType=TINYINT},
       </if>
       <if test="currentSegment != null">
         #{currentSegment,jdbcType=INTEGER},
@@ -200,12 +194,9 @@
       <if test="updateTime != null">
         #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="finished != null">
-        #{finished,jdbcType=TINYINT},
-      </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntityExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.tiiaan.tbm.metaj.entity.InstanceExample" resultType="java.lang.Long">
     select count(*) from tb_instance
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -223,14 +214,14 @@
       <if test="record.project != null">
         project = #{record.project,jdbcType=VARCHAR},
       </if>
-      <if test="record.healthy != null">
-        healthy = #{record.healthy,jdbcType=INTEGER},
-      </if>
       <if test="record.segments != null">
         segments = #{record.segments,jdbcType=INTEGER},
       </if>
       <if test="record.mileage != null">
         mileage = #{record.mileage,jdbcType=BIGINT},
+      </if>
+      <if test="record.health != null">
+        health = #{record.health,jdbcType=TINYINT},
       </if>
       <if test="record.currentSegment != null">
         current_segment = #{record.currentSegment,jdbcType=INTEGER},
@@ -250,9 +241,6 @@
       <if test="record.updateTime != null">
         update_time = #{record.updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="record.finished != null">
-        finished = #{record.finished,jdbcType=TINYINT},
-      </if>
     </set>
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
@@ -263,21 +251,20 @@
     set id = #{record.id,jdbcType=BIGINT},
       name = #{record.name,jdbcType=VARCHAR},
       project = #{record.project,jdbcType=VARCHAR},
-      healthy = #{record.healthy,jdbcType=INTEGER},
       segments = #{record.segments,jdbcType=INTEGER},
       mileage = #{record.mileage,jdbcType=BIGINT},
+      health = #{record.health,jdbcType=TINYINT},
       current_segment = #{record.currentSegment,jdbcType=INTEGER},
       issues = #{record.issues,jdbcType=INTEGER},
       unsolved_issues = #{record.unsolvedIssues,jdbcType=INTEGER},
       watching = #{record.watching,jdbcType=INTEGER},
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
-      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
-      finished = #{record.finished,jdbcType=TINYINT}
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP}
     <if test="_parameter != null">
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.Instance">
     update tb_instance
     <set>
       <if test="name != null">
@@ -286,14 +273,14 @@
       <if test="project != null">
         project = #{project,jdbcType=VARCHAR},
       </if>
-      <if test="healthy != null">
-        healthy = #{healthy,jdbcType=INTEGER},
-      </if>
       <if test="segments != null">
         segments = #{segments,jdbcType=INTEGER},
       </if>
       <if test="mileage != null">
         mileage = #{mileage,jdbcType=BIGINT},
+      </if>
+      <if test="health != null">
+        health = #{health,jdbcType=TINYINT},
       </if>
       <if test="currentSegment != null">
         current_segment = #{currentSegment,jdbcType=INTEGER},
@@ -313,210 +300,22 @@
       <if test="updateTime != null">
         update_time = #{updateTime,jdbcType=TIMESTAMP},
       </if>
-      <if test="finished != null">
-        finished = #{finished,jdbcType=TINYINT},
-      </if>
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
+  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.Instance">
     update tb_instance
     set name = #{name,jdbcType=VARCHAR},
       project = #{project,jdbcType=VARCHAR},
-      healthy = #{healthy,jdbcType=INTEGER},
       segments = #{segments,jdbcType=INTEGER},
       mileage = #{mileage,jdbcType=BIGINT},
+      health = #{health,jdbcType=TINYINT},
       current_segment = #{currentSegment,jdbcType=INTEGER},
       issues = #{issues,jdbcType=INTEGER},
       unsolved_issues = #{unsolvedIssues,jdbcType=INTEGER},
       watching = #{watching,jdbcType=INTEGER},
       create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      finished = #{finished,jdbcType=TINYINT}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="name" jdbcType="VARCHAR" property="name" />
-    <result column="project" jdbcType="VARCHAR" property="project" />
-    <result column="healthy" jdbcType="INTEGER" property="healthy" />
-    <result column="segments" jdbcType="INTEGER" property="segments" />
-    <result column="mileage" jdbcType="BIGINT" property="mileage" />
-    <result column="current_segment" jdbcType="INTEGER" property="currentSegment" />
-    <result column="issues" jdbcType="INTEGER" property="issues" />
-    <result column="unsolved_issues" jdbcType="INTEGER" property="unsolvedIssues" />
-    <result column="watching" jdbcType="INTEGER" property="watching" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-    <result column="finished" jdbcType="TINYINT" property="finished" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, name, project, healthy, segments, mileage, current_segment, issues, unsolved_issues, 
-    watching, create_time, update_time, finished
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from tb_instance
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from tb_instance
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    insert into tb_instance (id, name, project, 
-      healthy, segments, mileage, 
-      current_segment, issues, unsolved_issues, 
-      watching, create_time, update_time, 
-      finished)
-    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{project,jdbcType=VARCHAR}, 
-      #{healthy,jdbcType=INTEGER}, #{segments,jdbcType=INTEGER}, #{mileage,jdbcType=BIGINT}, 
-      #{currentSegment,jdbcType=INTEGER}, #{issues,jdbcType=INTEGER}, #{unsolvedIssues,jdbcType=INTEGER}, 
-      #{watching,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, 
-      #{finished,jdbcType=TINYINT})
-  </insert>
-  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    insert into tb_instance
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="name != null">
-        name,
-      </if>
-      <if test="project != null">
-        project,
-      </if>
-      <if test="healthy != null">
-        healthy,
-      </if>
-      <if test="segments != null">
-        segments,
-      </if>
-      <if test="mileage != null">
-        mileage,
-      </if>
-      <if test="currentSegment != null">
-        current_segment,
-      </if>
-      <if test="issues != null">
-        issues,
-      </if>
-      <if test="unsolvedIssues != null">
-        unsolved_issues,
-      </if>
-      <if test="watching != null">
-        watching,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-      <if test="finished != null">
-        finished,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="name != null">
-        #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="project != null">
-        #{project,jdbcType=VARCHAR},
-      </if>
-      <if test="healthy != null">
-        #{healthy,jdbcType=INTEGER},
-      </if>
-      <if test="segments != null">
-        #{segments,jdbcType=INTEGER},
-      </if>
-      <if test="mileage != null">
-        #{mileage,jdbcType=BIGINT},
-      </if>
-      <if test="currentSegment != null">
-        #{currentSegment,jdbcType=INTEGER},
-      </if>
-      <if test="issues != null">
-        #{issues,jdbcType=INTEGER},
-      </if>
-      <if test="unsolvedIssues != null">
-        #{unsolvedIssues,jdbcType=INTEGER},
-      </if>
-      <if test="watching != null">
-        #{watching,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="finished != null">
-        #{finished,jdbcType=TINYINT},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    update tb_instance
-    <set>
-      <if test="name != null">
-        name = #{name,jdbcType=VARCHAR},
-      </if>
-      <if test="project != null">
-        project = #{project,jdbcType=VARCHAR},
-      </if>
-      <if test="healthy != null">
-        healthy = #{healthy,jdbcType=INTEGER},
-      </if>
-      <if test="segments != null">
-        segments = #{segments,jdbcType=INTEGER},
-      </if>
-      <if test="mileage != null">
-        mileage = #{mileage,jdbcType=BIGINT},
-      </if>
-      <if test="currentSegment != null">
-        current_segment = #{currentSegment,jdbcType=INTEGER},
-      </if>
-      <if test="issues != null">
-        issues = #{issues,jdbcType=INTEGER},
-      </if>
-      <if test="unsolvedIssues != null">
-        unsolved_issues = #{unsolvedIssues,jdbcType=INTEGER},
-      </if>
-      <if test="watching != null">
-        watching = #{watching,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="finished != null">
-        finished = #{finished,jdbcType=TINYINT},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.InstanceEntity">
-    update tb_instance
-    set name = #{name,jdbcType=VARCHAR},
-      project = #{project,jdbcType=VARCHAR},
-      healthy = #{healthy,jdbcType=INTEGER},
-      segments = #{segments,jdbcType=INTEGER},
-      mileage = #{mileage,jdbcType=BIGINT},
-      current_segment = #{currentSegment,jdbcType=INTEGER},
-      issues = #{issues,jdbcType=INTEGER},
-      unsolved_issues = #{unsolvedIssues,jdbcType=INTEGER},
-      watching = #{watching,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP},
-      finished = #{finished,jdbcType=TINYINT}
+      update_time = #{updateTime,jdbcType=TIMESTAMP}
     where id = #{id,jdbcType=BIGINT}
   </update>
 </mapper>

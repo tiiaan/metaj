@@ -1,33 +1,30 @@
 package com.tiiaan.tbm.metaj.mapper;
 
-import com.tiiaan.tbm.metaj.entity.UserEntity;
-import com.tiiaan.tbm.metaj.entity.UserEntityExample;
+import com.tiiaan.tbm.metaj.entity.User;
+import com.tiiaan.tbm.metaj.entity.UserExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
 public interface UserMapper {
-    long countByExample(UserEntityExample example);
+    long countByExample(UserExample example);
 
-    int deleteByExample(UserEntityExample example);
+    int deleteByExample(UserExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(UserEntity record);
+    int insert(User record);
 
-    int insertSelective(UserEntity record);
+    int insertSelective(User record);
 
-    List<UserEntity> selectByExample(UserEntityExample example);
+    List<User> selectByExample(UserExample example);
 
-    UserEntity selectByPrimaryKey(Long id);
+    User selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") UserEntity record, @Param("example") UserEntityExample example);
+    int updateByExampleSelective(@Param("record") User record, @Param("example") UserExample example);
 
-    int updateByExample(@Param("record") UserEntity record, @Param("example") UserEntityExample example);
+    int updateByExample(@Param("record") User record, @Param("example") UserExample example);
 
-    int updateByPrimaryKeySelective(UserEntity record);
+    int updateByPrimaryKeySelective(User record);
 
-    int updateByPrimaryKey(UserEntity record);
+    int updateByPrimaryKey(User record);
 }

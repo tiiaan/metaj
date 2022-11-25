@@ -1,33 +1,39 @@
 package com.tiiaan.tbm.metaj.mapper;
 
-import com.tiiaan.tbm.metaj.entity.InstanceEntity;
-import com.tiiaan.tbm.metaj.entity.InstanceEntityExample;
+import com.tiiaan.tbm.metaj.entity.Instance;
+import com.tiiaan.tbm.metaj.entity.InstanceExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Update;
 
-@Mapper
 public interface InstanceMapper {
-    long countByExample(InstanceEntityExample example);
+    long countByExample(InstanceExample example);
 
-    int deleteByExample(InstanceEntityExample example);
+    int deleteByExample(InstanceExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(InstanceEntity record);
+    int insert(Instance record);
 
-    int insertSelective(InstanceEntity record);
+    int insertSelective(Instance record);
 
-    List<InstanceEntity> selectByExample(InstanceEntityExample example);
+    List<Instance> selectByExample(InstanceExample example);
 
-    InstanceEntity selectByPrimaryKey(Long id);
+    Instance selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") InstanceEntity record, @Param("example") InstanceEntityExample example);
+    int updateByExampleSelective(@Param("record") Instance record, @Param("example") InstanceExample example);
 
-    int updateByExample(@Param("record") InstanceEntity record, @Param("example") InstanceEntityExample example);
+    int updateByExample(@Param("record") Instance record, @Param("example") InstanceExample example);
 
-    int updateByPrimaryKeySelective(InstanceEntity record);
+    int updateByPrimaryKeySelective(Instance record);
 
-    int updateByPrimaryKey(InstanceEntity record);
+    int updateByPrimaryKey(Instance record);
+
+
+    @Update("update tb_insatnce set watching = watching + 1 where id = #{id}")
+    int updateWatchingPlusById(@Param("id") Long id);
+
+    @Update("update tb_insatnce set watching = watching - 1 where id = #{id}")
+    int updateWatchingDownById(@Param("id") Long id);
+
 }

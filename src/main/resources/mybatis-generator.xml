@@ -22,6 +22,7 @@
                         connectionURL="jdbc:mysql://localhost:3306/metaj?serverTimezone=UTC"
                         userId="root"
                         password="whtly3018107154">
+            <property name="nullCatalogMeansCurrent" value="true"/>
         </jdbcConnection>
 
         <javaTypeResolver>
@@ -51,14 +52,14 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <!--生成service,serviceImpl-->
-        <javaServiceGenerator targetPackage="com.tiiaan.tbm.metaj.service" targetProject="./src/main/java"
-                              implementationPackage="com.tiiaan.tbm.metaj.service.impl">
-        </javaServiceGenerator>
+        <!-- &lt;!&ndash;生成service,serviceImpl&ndash;&gt; -->
+        <!-- <javaServiceGenerator targetPackage="com.tiiaan.tbm.metaj.service" targetProject="./src/main/java" -->
+        <!--                       implementationPackage="com.tiiaan.tbm.metaj.service.impl"> -->
+        <!-- </javaServiceGenerator> -->
 
-        <!--生成controller-->
-        <javaControllerGenerator targetPackage="com.tiiaan.tbm.metaj.controller" targetProject="./src/main/java">
-        </javaControllerGenerator>
+        <!-- &lt;!&ndash;生成controller&ndash;&gt; -->
+        <!-- <javaControllerGenerator targetPackage="com.tiiaan.tbm.metaj.controller" targetProject="./src/main/java"> -->
+        <!-- </javaControllerGenerator> -->
 
         <!-- 逆向分析的表 -->
         <!-- tableName设置为*可以对应所有表，此时不写domainObjectName -->
@@ -74,16 +75,33 @@
         <!-- <table tableName="tb_segment" domainObjectName="SegmentEntity" mapperName="SegmentMapper" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/> -->
         <!-- <table tableName="tb_user" domainObjectName="IssueUserEntity" mapperName="IssueUserMapper" enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false" enableSelectByExample="false" selectByExampleQueryId="false"/> -->
 
-        <table tableName="tb_instance" domainObjectName="InstanceEntity" mapperName="InstanceMapper"/>
-        <table tableName="tb_instance_data" domainObjectName="InstanceDataEntity" mapperName="InstanceDataMapper"/>
-        <table tableName="tb_instance_watch" domainObjectName="InstanceWatchEntity" mapperName="InstanceWatchMapper"/>
-        <table tableName="tb_issue" domainObjectName="IssueEntity" mapperName="IssueMapper"/>
-        <table tableName="tb_issue_comment" domainObjectName="IssueCommentEntity" mapperName="IssueCommentMapper"/>
-        <table tableName="tb_issue_watch" domainObjectName="IssueWatchEntity" mapperName="IssueWatchMapper"/>
-        <table tableName="tb_issue_progress" domainObjectName="IssueProgressEntity" mapperName="IssueProgressMapper"/>
-        <table tableName="tb_segment" domainObjectName="SegmentEntity" mapperName="SegmentMapper"/>
-        <table tableName="tb_user" domainObjectName="UserEntity" mapperName="UserMapper"/>
-
+        <table tableName="tb_instance" domainObjectName="Instance" mapperName="InstanceMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_history" domainObjectName="History" mapperName="HistoryMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_watch" domainObjectName="Watch" mapperName="WatchMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_issue" domainObjectName="Issue" mapperName="IssueMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_issue_comment" domainObjectName="IssueComment" mapperName="IssueCommentMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_track" domainObjectName="Track" mapperName="TrackMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_issue_progress" domainObjectName="IssueProgress" mapperName="IssueProgressMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_segment" domainObjectName="Segment" mapperName="SegmentMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
+        <table tableName="tb_user" schema="metaj" domainObjectName="User" mapperName="UserMapper">
+            <generatedKey column="id" sqlStatement="Mysql" identity="true"/>
+        </table>
 
     </context>
 </generatorConfiguration>

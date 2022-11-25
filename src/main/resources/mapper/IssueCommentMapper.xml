@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.tiiaan.tbm.metaj.mapper.IssueCommentMapper">
-  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
+  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.IssueComment">
     <id column="id" jdbcType="BIGINT" property="id" />
     <result column="user_id" jdbcType="BIGINT" property="userId" />
     <result column="issue_id" jdbcType="BIGINT" property="issueId" />
@@ -73,7 +73,7 @@
   <sql id="Base_Column_List">
     id, user_id, issue_id, progress_id, content, file, voted, create_time, update_time
   </sql>
-  <select id="selectByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntityExample" resultMap="BaseResultMap">
+  <select id="selectByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentExample" resultMap="BaseResultMap">
     select
     <if test="distinct">
       distinct
@@ -97,28 +97,29 @@
     delete from tb_issue_comment
     where id = #{id,jdbcType=BIGINT}
   </delete>
-  <delete id="deleteByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntityExample">
+  <delete id="deleteByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentExample">
     delete from tb_issue_comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
     </if>
   </delete>
-  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    insert into tb_issue_comment (id, user_id, issue_id, 
-      progress_id, content, file, 
-      voted, create_time, update_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, 
-      #{progressId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{file,jdbcType=VARCHAR}, 
-      #{voted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
+  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.IssueComment">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into tb_issue_comment (user_id, issue_id, progress_id, 
+      content, file, voted, 
+      create_time, update_time)
+    values (#{userId,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, #{progressId,jdbcType=BIGINT}, 
+      #{content,jdbcType=VARCHAR}, #{file,jdbcType=VARCHAR}, #{voted,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP})
   </insert>
-  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
+  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueComment">
+    <selectKey keyProperty="id" order="AFTER" resultType="java.lang.Long">
+      SELECT LAST_INSERT_ID()
+    </selectKey>
     insert into tb_issue_comment
     <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
       <if test="userId != null">
         user_id,
       </if>
@@ -145,9 +146,6 @@
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
       <if test="userId != null">
         #{userId,jdbcType=BIGINT},
       </if>
@@ -174,7 +172,7 @@
       </if>
     </trim>
   </insert>
-  <select id="countByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntityExample" resultType="java.lang.Long">
+  <select id="countByExample" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentExample" resultType="java.lang.Long">
     select count(*) from tb_issue_comment
     <if test="_parameter != null">
       <include refid="Example_Where_Clause" />
@@ -230,7 +228,7 @@
       <include refid="Update_By_Example_Where_Clause" />
     </if>
   </update>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
+  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueComment">
     update tb_issue_comment
     <set>
       <if test="userId != null">
@@ -260,144 +258,7 @@
     </set>
     where id = #{id,jdbcType=BIGINT}
   </update>
-  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    update tb_issue_comment
-    set user_id = #{userId,jdbcType=BIGINT},
-      issue_id = #{issueId,jdbcType=BIGINT},
-      progress_id = #{progressId,jdbcType=BIGINT},
-      content = #{content,jdbcType=VARCHAR},
-      file = #{file,jdbcType=VARCHAR},
-      voted = #{voted,jdbcType=INTEGER},
-      create_time = #{createTime,jdbcType=TIMESTAMP},
-      update_time = #{updateTime,jdbcType=TIMESTAMP}
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <resultMap id="BaseResultMap" type="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    <id column="id" jdbcType="BIGINT" property="id" />
-    <result column="user_id" jdbcType="BIGINT" property="userId" />
-    <result column="issue_id" jdbcType="BIGINT" property="issueId" />
-    <result column="progress_id" jdbcType="BIGINT" property="progressId" />
-    <result column="content" jdbcType="VARCHAR" property="content" />
-    <result column="file" jdbcType="VARCHAR" property="file" />
-    <result column="voted" jdbcType="INTEGER" property="voted" />
-    <result column="create_time" jdbcType="TIMESTAMP" property="createTime" />
-    <result column="update_time" jdbcType="TIMESTAMP" property="updateTime" />
-  </resultMap>
-  <sql id="Base_Column_List">
-    id, user_id, issue_id, progress_id, content, file, voted, create_time, update_time
-  </sql>
-  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
-    select 
-    <include refid="Base_Column_List" />
-    from tb_issue_comment
-    where id = #{id,jdbcType=BIGINT}
-  </select>
-  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
-    delete from tb_issue_comment
-    where id = #{id,jdbcType=BIGINT}
-  </delete>
-  <insert id="insert" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    insert into tb_issue_comment (id, user_id, issue_id, 
-      progress_id, content, file, 
-      voted, create_time, update_time
-      )
-    values (#{id,jdbcType=BIGINT}, #{userId,jdbcType=BIGINT}, #{issueId,jdbcType=BIGINT}, 
-      #{progressId,jdbcType=BIGINT}, #{content,jdbcType=VARCHAR}, #{file,jdbcType=VARCHAR}, 
-      #{voted,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}
-      )
-  </insert>
-  <insert id="insertSelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    insert into tb_issue_comment
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        id,
-      </if>
-      <if test="userId != null">
-        user_id,
-      </if>
-      <if test="issueId != null">
-        issue_id,
-      </if>
-      <if test="progressId != null">
-        progress_id,
-      </if>
-      <if test="content != null">
-        content,
-      </if>
-      <if test="file != null">
-        file,
-      </if>
-      <if test="voted != null">
-        voted,
-      </if>
-      <if test="createTime != null">
-        create_time,
-      </if>
-      <if test="updateTime != null">
-        update_time,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        #{id,jdbcType=BIGINT},
-      </if>
-      <if test="userId != null">
-        #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="issueId != null">
-        #{issueId,jdbcType=BIGINT},
-      </if>
-      <if test="progressId != null">
-        #{progressId,jdbcType=BIGINT},
-      </if>
-      <if test="content != null">
-        #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="file != null">
-        #{file,jdbcType=VARCHAR},
-      </if>
-      <if test="voted != null">
-        #{voted,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </trim>
-  </insert>
-  <update id="updateByPrimaryKeySelective" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
-    update tb_issue_comment
-    <set>
-      <if test="userId != null">
-        user_id = #{userId,jdbcType=BIGINT},
-      </if>
-      <if test="issueId != null">
-        issue_id = #{issueId,jdbcType=BIGINT},
-      </if>
-      <if test="progressId != null">
-        progress_id = #{progressId,jdbcType=BIGINT},
-      </if>
-      <if test="content != null">
-        content = #{content,jdbcType=VARCHAR},
-      </if>
-      <if test="file != null">
-        file = #{file,jdbcType=VARCHAR},
-      </if>
-      <if test="voted != null">
-        voted = #{voted,jdbcType=INTEGER},
-      </if>
-      <if test="createTime != null">
-        create_time = #{createTime,jdbcType=TIMESTAMP},
-      </if>
-      <if test="updateTime != null">
-        update_time = #{updateTime,jdbcType=TIMESTAMP},
-      </if>
-    </set>
-    where id = #{id,jdbcType=BIGINT}
-  </update>
-  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.IssueCommentEntity">
+  <update id="updateByPrimaryKey" parameterType="com.tiiaan.tbm.metaj.entity.IssueComment">
     update tb_issue_comment
     set user_id = #{userId,jdbcType=BIGINT},
       issue_id = #{issueId,jdbcType=BIGINT},

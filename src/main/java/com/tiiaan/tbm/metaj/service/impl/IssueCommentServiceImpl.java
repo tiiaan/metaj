@@ -1,8 +1,9 @@
 package com.tiiaan.tbm.metaj.service.impl;
 
-import com.tiiaan.tbm.metaj.mapper.IssueWatchMapper;
+import com.tiiaan.tbm.metaj.mapper.IssueCommentMapper;
 import com.tiiaan.tbm.metaj.service.IssueCommentService;
-import com.tiiaan.tbm.metaj.service.IssueWatchService;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 
@@ -12,9 +13,11 @@ import javax.annotation.Resource;
  * description
  */
 
+@Slf4j
+@Service
 public class IssueCommentServiceImpl implements IssueCommentService {
 
     @Resource
-    private IssueWatchMapper issueWatchMapper;
+    private IssueCommentMapper issueCommentMapper;
 
 }

@@ -1,33 +1,30 @@
 package com.tiiaan.tbm.metaj.mapper;
 
-import com.tiiaan.tbm.metaj.entity.IssueProgressEntity;
-import com.tiiaan.tbm.metaj.entity.IssueProgressEntityExample;
+import com.tiiaan.tbm.metaj.entity.IssueProgress;
+import com.tiiaan.tbm.metaj.entity.IssueProgressExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
 public interface IssueProgressMapper {
-    long countByExample(IssueProgressEntityExample example);
+    long countByExample(IssueProgressExample example);
 
-    int deleteByExample(IssueProgressEntityExample example);
+    int deleteByExample(IssueProgressExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(IssueProgressEntity record);
+    int insert(IssueProgress record);
 
-    int insertSelective(IssueProgressEntity record);
+    int insertSelective(IssueProgress record);
 
-    List<IssueProgressEntity> selectByExample(IssueProgressEntityExample example);
+    List<IssueProgress> selectByExample(IssueProgressExample example);
 
-    IssueProgressEntity selectByPrimaryKey(Long id);
+    IssueProgress selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") IssueProgressEntity record, @Param("example") IssueProgressEntityExample example);
+    int updateByExampleSelective(@Param("record") IssueProgress record, @Param("example") IssueProgressExample example);
 
-    int updateByExample(@Param("record") IssueProgressEntity record, @Param("example") IssueProgressEntityExample example);
+    int updateByExample(@Param("record") IssueProgress record, @Param("example") IssueProgressExample example);
 
-    int updateByPrimaryKeySelective(IssueProgressEntity record);
+    int updateByPrimaryKeySelective(IssueProgress record);
 
-    int updateByPrimaryKey(IssueProgressEntity record);
+    int updateByPrimaryKey(IssueProgress record);
 }

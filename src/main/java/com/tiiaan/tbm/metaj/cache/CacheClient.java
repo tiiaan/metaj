@@ -132,7 +132,7 @@ public class CacheClient {
         }
         T value;
         SimpleRedisLock lock = new SimpleRedisLock(key, stringRedisTemplate);
-        boolean isLock = lock.tryLock(10L, TimeUnit.SECONDS);
+        boolean isLock = lock.tryLock(5L, TimeUnit.SECONDS);
         try {
             if (!isLock) {
                 try { TimeUnit.MILLISECONDS.sleep(50); } catch (InterruptedException e) { e.printStackTrace(); }

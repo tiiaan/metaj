@@ -1,33 +1,30 @@
 package com.tiiaan.tbm.metaj.mapper;
 
-import com.tiiaan.tbm.metaj.entity.SegmentEntity;
-import com.tiiaan.tbm.metaj.entity.SegmentEntityExample;
+import com.tiiaan.tbm.metaj.entity.Segment;
+import com.tiiaan.tbm.metaj.entity.SegmentExample;
 import java.util.List;
-
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-@Mapper
 public interface SegmentMapper {
-    long countByExample(SegmentEntityExample example);
+    long countByExample(SegmentExample example);
 
-    int deleteByExample(SegmentEntityExample example);
+    int deleteByExample(SegmentExample example);
 
     int deleteByPrimaryKey(Long id);
 
-    int insert(SegmentEntity record);
+    int insert(Segment record);
 
-    int insertSelective(SegmentEntity record);
+    int insertSelective(Segment record);
 
-    List<SegmentEntity> selectByExample(SegmentEntityExample example);
+    List<Segment> selectByExample(SegmentExample example);
 
-    SegmentEntity selectByPrimaryKey(Long id);
+    Segment selectByPrimaryKey(Long id);
 
-    int updateByExampleSelective(@Param("record") SegmentEntity record, @Param("example") SegmentEntityExample example);
+    int updateByExampleSelective(@Param("record") Segment record, @Param("example") SegmentExample example);
 
-    int updateByExample(@Param("record") SegmentEntity record, @Param("example") SegmentEntityExample example);
+    int updateByExample(@Param("record") Segment record, @Param("example") SegmentExample example);
 
-    int updateByPrimaryKeySelective(SegmentEntity record);
+    int updateByPrimaryKeySelective(Segment record);
 
-    int updateByPrimaryKey(SegmentEntity record);
+    int updateByPrimaryKey(Segment record);
 }
