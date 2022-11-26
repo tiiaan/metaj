@@ -1,45 +1,40 @@
 package com.tiiaan.tbm.metaj.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class Watch {
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_watch")
+public class Watch implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @TableField("user_id")
     private Long userId;
 
+    @TableField("instance_id")
     private Long instanceId;
 
+    @TableField("create_time")
     private LocalDateTime createTime;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(Long instanceId) {
-        this.instanceId = instanceId;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
 }

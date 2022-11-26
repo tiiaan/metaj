@@ -20,6 +20,9 @@ out
 
 lib
 
+*.yaml
+*.yml
+
 
 HELP.md
 target/

@@ -1,14 +1,16 @@
 package com.tiiaan.tbm.metaj.service;
 
-import com.tiiaan.tbm.metaj.dto.LoginFormDTO;
-import com.tiiaan.tbm.metaj.dto.Result;
+import com.tiiaan.tbm.metaj.entity.User;
+import com.baomidou.mybatisplus.extension.service.IService;
 
 /**
- * @author tiiaan Email:tiiaan.w@gmail.com
- * @version 0.0
- * description
+ * <p>
+ *  服务类
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
  */
+public interface UserService extends IService<User> {
 
-public interface UserService {
-    Result login(LoginFormDTO loginFormDTO);
 }

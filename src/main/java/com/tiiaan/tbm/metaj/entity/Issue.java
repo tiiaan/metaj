@@ -1,115 +1,61 @@
 package com.tiiaan.tbm.metaj.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class Issue {
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_issue")
+public class Issue implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @TableField("user_id")
     private Long userId;
 
+    @TableField("instance_id")
     private Long instanceId;
 
-    private Byte level;
+    @TableField("level")
+    private Integer level;
 
+    @TableField("title")
     private String title;
 
+    @TableField("description")
     private String description;
 
+    @TableField("tracking")
     private Integer tracking;
 
+    @TableField("comments")
     private Integer comments;
 
-    private Byte closed;
+    @TableField("closed")
+    private Integer closed;
 
+    @TableField("create_time")
     private LocalDateTime createTime;
 
+    @TableField("update_time")
     private LocalDateTime updateTime;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
-
-    public Long getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(Long instanceId) {
-        this.instanceId = instanceId;
-    }
-
-    public Byte getLevel() {
-        return level;
-    }
-
-    public void setLevel(Byte level) {
-        this.level = level;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title == null ? null : title.trim();
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description == null ? null : description.trim();
-    }
-
-    public Integer getTracking() {
-        return tracking;
-    }
-
-    public void setTracking(Integer tracking) {
-        this.tracking = tracking;
-    }
-
-    public Integer getComments() {
-        return comments;
-    }
-
-    public void setComments(Integer comments) {
-        this.comments = comments;
-    }
-
-    public Byte getClosed() {
-        return closed;
-    }
-
-    public void setClosed(Byte closed) {
-        this.closed = closed;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
 }

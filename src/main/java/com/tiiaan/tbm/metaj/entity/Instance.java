@@ -1,125 +1,79 @@
 package com.tiiaan.tbm.metaj.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-public class Instance {
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_instance")
+public class Instance implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableField(exist = false)
+    private Boolean isWatching;
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @TableField("user_id")
+    private Long userId;
+
+    @TableField("name")
     private String name;
 
+    @TableField("project")
     private String project;
 
+    @TableField("segments")
     private Integer segments;
 
+    @TableField("mileage")
     private Long mileage;
 
-    private Byte health;
+    @TableField("longitude")
+    private Double longitude;
 
+    @TableField("latitude")
+    private Double latitude;
+
+    @TableField("health")
+    private Integer health;
+
+    @TableField("current_segment")
     private Integer currentSegment;
 
+    @TableField("warns")
+    private Integer warns;
+
+    @TableField("issues")
     private Integer issues;
 
+    @TableField("unsolved_issues")
     private Integer unsolvedIssues;
 
+    @TableField("watching")
     private Integer watching;
 
+    @TableField("create_time")
     private LocalDateTime createTime;
 
+    @TableField("update_time")
     private LocalDateTime updateTime;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getProject() {
-        return project;
-    }
-
-    public void setProject(String project) {
-        this.project = project == null ? null : project.trim();
-    }
-
-    public Integer getSegments() {
-        return segments;
-    }
-
-    public void setSegments(Integer segments) {
-        this.segments = segments;
-    }
-
-    public Long getMileage() {
-        return mileage;
-    }
-
-    public void setMileage(Long mileage) {
-        this.mileage = mileage;
-    }
-
-    public Byte getHealth() {
-        return health;
-    }
-
-    public void setHealth(Byte health) {
-        this.health = health;
-    }
-
-    public Integer getCurrentSegment() {
-        return currentSegment;
-    }
-
-    public void setCurrentSegment(Integer currentSegment) {
-        this.currentSegment = currentSegment;
-    }
-
-    public Integer getIssues() {
-        return issues;
-    }
-
-    public void setIssues(Integer issues) {
-        this.issues = issues;
-    }
-
-    public Integer getUnsolvedIssues() {
-        return unsolvedIssues;
-    }
-
-    public void setUnsolvedIssues(Integer unsolvedIssues) {
-        this.unsolvedIssues = unsolvedIssues;
-    }
-
-    public Integer getWatching() {
-        return watching;
-    }
-
-    public void setWatching(Integer watching) {
-        this.watching = watching;
-    }
-
-    public LocalDateTime getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(LocalDateTime createTime) {
-        this.createTime = createTime;
-    }
-
-    public LocalDateTime getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(LocalDateTime updateTime) {
-        this.updateTime = updateTime;
-    }
 }

@@ -1,133 +1,69 @@
 package com.tiiaan.tbm.metaj.entity;
 
-public class History {
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_history")
+public class History implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    @TableField("issue_id")
     private Long issueId;
 
+    @TableField("instance_id")
+    private Long instanceId;
+
+    @TableField("timestamp")
     private Long timestamp;
 
+    @TableField("main_torque")
     private Double mainTorque;
 
+    @TableField("motor_torque")
     private Double motorTorque;
 
+    @TableField("main_force")
     private Double mainForce;
 
+    @TableField("bias_force")
     private Double biasForce;
 
+    @TableField("asm_pressure")
     private Double asmPressure;
 
+    @TableField("asm_temperature")
     private Double asmTemperature;
 
+    @TableField("prop_pressure")
     private Double propPressure;
 
+    @TableField("prop_temperature")
     private Double propTemperature;
 
+    @TableField("bear_temperature")
     private Double bearTemperature;
 
+    @TableField("bear_bolt_strain")
     private Double bearBoltStrain;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public Long getIssueId() {
-        return issueId;
-    }
-
-    public void setIssueId(Long issueId) {
-        this.issueId = issueId;
-    }
-
-    public Long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(Long timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public Double getMainTorque() {
-        return mainTorque;
-    }
-
-    public void setMainTorque(Double mainTorque) {
-        this.mainTorque = mainTorque;
-    }
-
-    public Double getMotorTorque() {
-        return motorTorque;
-    }
-
-    public void setMotorTorque(Double motorTorque) {
-        this.motorTorque = motorTorque;
-    }
-
-    public Double getMainForce() {
-        return mainForce;
-    }
-
-    public void setMainForce(Double mainForce) {
-        this.mainForce = mainForce;
-    }
-
-    public Double getBiasForce() {
-        return biasForce;
-    }
-
-    public void setBiasForce(Double biasForce) {
-        this.biasForce = biasForce;
-    }
-
-    public Double getAsmPressure() {
-        return asmPressure;
-    }
-
-    public void setAsmPressure(Double asmPressure) {
-        this.asmPressure = asmPressure;
-    }
-
-    public Double getAsmTemperature() {
-        return asmTemperature;
-    }
-
-    public void setAsmTemperature(Double asmTemperature) {
-        this.asmTemperature = asmTemperature;
-    }
-
-    public Double getPropPressure() {
-        return propPressure;
-    }
-
-    public void setPropPressure(Double propPressure) {
-        this.propPressure = propPressure;
-    }
-
-    public Double getPropTemperature() {
-        return propTemperature;
-    }
-
-    public void setPropTemperature(Double propTemperature) {
-        this.propTemperature = propTemperature;
-    }
-
-    public Double getBearTemperature() {
-        return bearTemperature;
-    }
-
-    public void setBearTemperature(Double bearTemperature) {
-        this.bearTemperature = bearTemperature;
-    }
-
-    public Double getBearBoltStrain() {
-        return bearBoltStrain;
-    }
-
-    public void setBearBoltStrain(Double bearBoltStrain) {
-        this.bearBoltStrain = bearBoltStrain;
-    }
 }

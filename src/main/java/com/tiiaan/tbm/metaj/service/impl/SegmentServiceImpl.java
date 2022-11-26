@@ -1,23 +1,20 @@
 package com.tiiaan.tbm.metaj.service.impl;
 
+import com.tiiaan.tbm.metaj.entity.Segment;
 import com.tiiaan.tbm.metaj.mapper.SegmentMapper;
 import com.tiiaan.tbm.metaj.service.SegmentService;
-import lombok.extern.slf4j.Slf4j;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.Resource;
-
 /**
- * @author tiiaan Email:tiiaan.w@gmail.com
- * @version 0.0
- * description
+ * <p>
+ *  服务实现类
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
  */
-
-@Slf4j
 @Service
-public class SegmentServiceImpl implements SegmentService {
-
-    @Resource
-    private SegmentMapper segmentMapper;
+public class SegmentServiceImpl extends ServiceImpl<SegmentMapper, Segment> implements SegmentService {
 
 }

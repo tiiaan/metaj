@@ -1,30 +1,16 @@
 package com.tiiaan.tbm.metaj.mapper;
 
 import com.tiiaan.tbm.metaj.entity.IssueComment;
-import com.tiiaan.tbm.metaj.entity.IssueCommentExample;
-import java.util.List;
-import org.apache.ibatis.annotations.Param;
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
-public interface IssueCommentMapper {
-    long countByExample(IssueCommentExample example);
+/**
+ * <p>
+ *  Mapper 接口
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+public interface IssueCommentMapper extends BaseMapper<IssueComment> {
 
-    int deleteByExample(IssueCommentExample example);
-
-    int deleteByPrimaryKey(Long id);
-
-    int insert(IssueComment record);
-
-    int insertSelective(IssueComment record);
-
-    List<IssueComment> selectByExample(IssueCommentExample example);
-
-    IssueComment selectByPrimaryKey(Long id);
-
-    int updateByExampleSelective(@Param("record") IssueComment record, @Param("example") IssueCommentExample example);
-
-    int updateByExample(@Param("record") IssueComment record, @Param("example") IssueCommentExample example);
-
-    int updateByPrimaryKeySelective(IssueComment record);
-
-    int updateByPrimaryKey(IssueComment record);
 }

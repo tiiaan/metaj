@@ -13,14 +13,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InstanceDTO {
+public class MomentStatusDTO {
 
-    private String name;
-
-    private String project;
-
-    private Integer segments;
-
-    private Long mileage;
+    private Long timestamp;
+    private Double value;
 
 }

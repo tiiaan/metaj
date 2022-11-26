@@ -1,7 +1,7 @@
 package com.tiiaan.tbm.metaj.controller;
 
-import com.tiiaan.tbm.metaj.dto.InstanceDTO;
-import com.tiiaan.tbm.metaj.dto.InstanceStatusDTO;
+
+import com.tiiaan.tbm.metaj.dto.InstanceFormDTO;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.service.InstanceService;
 import org.springframework.web.bind.annotation.*;
@@ -9,11 +9,13 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 /**
- * @author tiiaan Email:tiiaan.w@gmail.com
- * @version 0.0
- * description
+ * <p>
+ *  前端控制器
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
  */
-
 @RestController
 @RequestMapping("/instance")
 public class InstanceController {
@@ -23,8 +25,8 @@ public class InstanceController {
 
 
     @PostMapping
-    public Result registerInstance(@RequestBody InstanceDTO instanceDTO) {
-        return instanceService.registerInstance(instanceDTO);
+    public Result addInstance(@RequestBody InstanceFormDTO instanceFormDTO) {
+        return instanceService.addInstance(instanceFormDTO);
     }
 
 
@@ -34,9 +36,10 @@ public class InstanceController {
     }
 
 
-    @PutMapping("/watch/{id}")
-    public Result watchInstance(@PathVariable("id") Long id) {
-        return instanceService.watchInstance(id);
+    @GetMapping
+    public Result queryInstances() {
+        return Result.ok();
+        //return instanceService.queryInstances();
     }
 
 }

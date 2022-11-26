@@ -53,12 +53,12 @@
         </javaClientGenerator>
 
         <!-- &lt;!&ndash;生成service,serviceImpl&ndash;&gt; -->
-        <!-- <javaServiceGenerator targetPackage="com.tiiaan.tbm.metaj.service" targetProject="./src/main/java" -->
-        <!--                       implementationPackage="com.tiiaan.tbm.metaj.service.impl"> -->
+        <!-- <javaServiceGenerator targetPackage="com.tiiaan.tbm.metaj.service_old" targetProject="./src/main/java" -->
+        <!--                       implementationPackage="com.tiiaan.tbm.metaj.service_old.impl"> -->
         <!-- </javaServiceGenerator> -->
 
         <!-- &lt;!&ndash;生成controller&ndash;&gt; -->
-        <!-- <javaControllerGenerator targetPackage="com.tiiaan.tbm.metaj.controller" targetProject="./src/main/java"> -->
+        <!-- <javaControllerGenerator targetPackage="com.tiiaan.tbm.metaj.controller_old" targetProject="./src/main/java"> -->
         <!-- </javaControllerGenerator> -->
 
         <!-- 逆向分析的表 -->

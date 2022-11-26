@@ -7,4 +7,8 @@ package com.tiiaan.tbm.metaj.dto;
  */
 
 public class LoginFormDTO {
+
+    private String name;
+    private String pwd;
+
 }

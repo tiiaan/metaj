@@ -1,115 +1,107 @@
 package com.tiiaan.tbm.metaj.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
 
-public class Segment {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_segment")
+public class Segment implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    public Segment(Instance instance) {
+        this(null, instance.getId(), 0, instance.getLongitude(), instance.getLatitude(), System.currentTimeMillis(), System.currentTimeMillis(), 0L, 0L, 0L, 0.0, null);
+    }
+
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
+    /**
+     * 实例号
+     */
+    @TableField("instance_id")
     private Long instanceId;
 
+    /**
+     * 环号
+     */
+    @TableField("circle_seq")
     private Integer circleSeq;
 
+    /**
+     * 当前经度
+     */
+    @TableField("longitude")
     private Double longitude;
 
+    /**
+     * 当前纬度
+     */
+    @TableField("latitude")
     private Double latitude;
 
-    private LocalDateTime startTime;
+    /**
+     * 环片开始时间
+     */
+    @TableField("start")
+    private Long start;
 
-    private LocalDateTime finishTime;
+    /**
+     * 环片结束时间
+     */
+    @TableField("finish")
+    private Long finish;
 
-    private Integer propPeriod;
+    /**
+     * 推进时长
+     */
+    @TableField("prop_period")
+    private Long propPeriod;
 
-    private Integer asmPeriod;
+    /**
+     * 拼装时长
+     */
+    @TableField("asm_period")
+    private Long asmPeriod;
 
-    private Integer stopPeriod;
+    /**
+     * 停机时长
+     */
+    @TableField("stop_period")
+    private Long stopPeriod;
 
-    private Integer fillingAmount;
+    /**
+     * 同步注浆量
+     */
+    @TableField("filling_amount")
+    private Double fillingAmount;
 
-    public Long getId() {
-        return id;
-    }
+    /**
+     * 更新时间
+     */
+    @TableField("update_time")
+    private LocalDateTime updateTime;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
 
-    public Long getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(Long instanceId) {
-        this.instanceId = instanceId;
-    }
-
-    public Integer getCircleSeq() {
-        return circleSeq;
-    }
-
-    public void setCircleSeq(Integer circleSeq) {
-        this.circleSeq = circleSeq;
-    }
-
-    public Double getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(Double longitude) {
-        this.longitude = longitude;
-    }
-
-    public Double getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(Double latitude) {
-        this.latitude = latitude;
-    }
-
-    public LocalDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(LocalDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public LocalDateTime getFinishTime() {
-        return finishTime;
-    }
-
-    public void setFinishTime(LocalDateTime finishTime) {
-        this.finishTime = finishTime;
-    }
-
-    public Integer getPropPeriod() {
-        return propPeriod;
-    }
-
-    public void setPropPeriod(Integer propPeriod) {
-        this.propPeriod = propPeriod;
-    }
-
-    public Integer getAsmPeriod() {
-        return asmPeriod;
-    }
-
-    public void setAsmPeriod(Integer asmPeriod) {
-        this.asmPeriod = asmPeriod;
-    }
-
-    public Integer getStopPeriod() {
-        return stopPeriod;
-    }
-
-    public void setStopPeriod(Integer stopPeriod) {
-        this.stopPeriod = stopPeriod;
-    }
-
-    public Integer getFillingAmount() {
-        return fillingAmount;
-    }
-
-    public void setFillingAmount(Integer fillingAmount) {
-        this.fillingAmount = fillingAmount;
-    }
 }

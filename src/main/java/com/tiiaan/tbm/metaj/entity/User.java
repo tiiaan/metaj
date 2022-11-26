@@ -1,83 +1,54 @@
 package com.tiiaan.tbm.metaj.entity;
 
-public class User {
+import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableField;
+import java.io.Serializable;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
+/**
+ * <p>
+ * 
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+@Data
+@EqualsAndHashCode(callSuper = false)
+@TableName("tb_user")
+public class User implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+    @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 
-    private String phone;
-
+    @TableField("name")
     private String name;
 
+    @TableField("pwd")
     private String pwd;
 
+    @TableField("phone")
+    private String phone;
+
+    @TableField("email")
+    private String email;
+
+    @TableField("avator")
     private String avator;
 
+    @TableField("dept")
     private String dept;
 
+    @TableField("role")
     private String role;
 
-    private Byte rank;
+    @TableField("rank")
+    private Integer rank;
 
-    public Long getId() {
-        return id;
-    }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone == null ? null : phone.trim();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
-    }
-
-    public String getPwd() {
-        return pwd;
-    }
-
-    public void setPwd(String pwd) {
-        this.pwd = pwd == null ? null : pwd.trim();
-    }
-
-    public String getAvator() {
-        return avator;
-    }
-
-    public void setAvator(String avator) {
-        this.avator = avator == null ? null : avator.trim();
-    }
-
-    public String getDept() {
-        return dept;
-    }
-
-    public void setDept(String dept) {
-        this.dept = dept == null ? null : dept.trim();
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role == null ? null : role.trim();
-    }
-
-    public Byte getRank() {
-        return rank;
-    }
-
-    public void setRank(Byte rank) {
-        this.rank = rank;
-    }
 }

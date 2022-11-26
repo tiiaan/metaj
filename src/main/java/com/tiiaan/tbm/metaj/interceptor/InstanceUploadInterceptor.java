@@ -2,6 +2,7 @@ package com.tiiaan.tbm.metaj.interceptor;
 
 import com.tiiaan.tbm.metaj.holder.InstanceHolder;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,6 +15,7 @@ import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
  * description
  */
 
+@Component
 public class InstanceUploadInterceptor implements HandlerInterceptor {
 
     private StringRedisTemplate stringRedisTemplate;
@@ -25,7 +27,7 @@ public class InstanceUploadInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        String token = request.getHeader("authorization");
+        String token = request.getHeader("token");
         if (token == null || token.length() == 0) {
             return false;
         }

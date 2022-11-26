@@ -1,10 +1,16 @@
 package com.tiiaan.tbm.metaj.service;
 
-/**
- * @author tiiaan Email:tiiaan.w@gmail.com
- * @version 0.0
- * description
- */
+import com.tiiaan.tbm.metaj.entity.IssueComment;
+import com.baomidou.mybatisplus.extension.service.IService;
 
-public interface IssueCommentService {
+/**
+ * <p>
+ *  服务类
+ * </p>
+ *
+ * @author tiiaan
+ * @since 2023-02-26
+ */
+public interface IssueCommentService extends IService<IssueComment> {
+
 }

@@ -38,7 +38,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
             return true;
         }
         //2. 拿着token从Redis中取出用户
-        String tokenKey = LOGIN_USER_KEY + token;
+        String tokenKey = USER_TOKEN + token;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(tokenKey);
         //3. 如果查到了用户就保存到ThreadLocal中
         if (userMap.isEmpty()) {
@@ -47,7 +47,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
         UserDTO user = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         UserHolder.saveUser(user);
         //4. 刷新token有效期
-        stringRedisTemplate.expire(token, LOGIN_USER_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(token, USER_TOKEN_TTL, TimeUnit.MINUTES);
         //5. 全部放行
         return true;
     }

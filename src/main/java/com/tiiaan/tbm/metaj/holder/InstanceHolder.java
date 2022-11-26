@@ -1,7 +1,5 @@
 package com.tiiaan.tbm.metaj.holder;
 
-import com.tiiaan.tbm.metaj.dto.InstanceDTO;
-
 /**
  * @author tiiaan Email:tiiaan.w@gmail.com
  * @version 0.0

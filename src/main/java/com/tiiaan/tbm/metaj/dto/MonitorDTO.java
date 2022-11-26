@@ -5,8 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 /**
  * @author tiiaan Email:tiiaan.w@gmail.com
  * @version 0.0
@@ -17,7 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class InstanceStatusDTO {
+public class MonitorDTO {
 
     private Long timestamp;
 
