@@ -19,4 +19,12 @@ public interface InstanceService extends IService<Instance> {
 
     Result addInstance(InstanceFormDTO instanceFormDTO);
 
+    Result queryInstances(Integer curr);
+
+    Result queryInstancesMe(Integer curr);
+
+    Result watchInstance(Long id);
+
+    Result queryInstanceWatching(Long id);
+
 }

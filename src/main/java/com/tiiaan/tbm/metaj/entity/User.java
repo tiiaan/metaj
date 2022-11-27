@@ -38,8 +38,8 @@ public class User implements Serializable {
     @TableField("email")
     private String email;
 
-    @TableField("avator")
-    private String avator;
+    @TableField("avatar")
+    private String avatar;
 
     @TableField("dept")
     private String dept;
@@ -47,8 +47,8 @@ public class User implements Serializable {
     @TableField("role")
     private String role;
 
-    @TableField("rank")
-    private Integer rank;
+    @TableField("level")
+    private Integer level;
 
 
 }

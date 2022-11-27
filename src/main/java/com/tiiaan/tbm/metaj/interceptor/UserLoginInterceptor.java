@@ -18,13 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class UserLoginInterceptor implements HandlerInterceptor {
 
-    private StringRedisTemplate stringRedisTemplate;
-
-
-    public UserLoginInterceptor(StringRedisTemplate stringRedisTemplate) {
-        this.stringRedisTemplate = stringRedisTemplate;
-    }
-
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -37,5 +30,4 @@ public class UserLoginInterceptor implements HandlerInterceptor {
         }
         return true;
     }
-
 }

@@ -6,7 +6,10 @@ package com.tiiaan.tbm.metaj.common;
  * description
  */
 
-public class Constants {
+public class SysConstants {
 
     public static final int INSTANCE_NAME_LEN = 20;
+
+    public static final int INSTANCE_PAGE_SIZE = 3;
+
 }

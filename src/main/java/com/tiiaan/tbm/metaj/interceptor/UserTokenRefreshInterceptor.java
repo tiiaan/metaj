@@ -3,6 +3,7 @@ package com.tiiaan.tbm.metaj.interceptor;
 import cn.hutool.core.bean.BeanUtil;
 import com.tiiaan.tbm.metaj.dto.UserDTO;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -20,6 +21,7 @@ import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
  * description
  */
 
+@Slf4j
 @Component
 public class UserTokenRefreshInterceptor implements HandlerInterceptor {
 
@@ -37,6 +39,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
         if (token == null || token.length() == 0) {
             return true;
         }
+        log.info("authorization bingo, got token form header [{}]", token);
         //2. 拿着token从Redis中取出用户
         String tokenKey = USER_TOKEN + token;
         Map<Object, Object> userMap = stringRedisTemplate.opsForHash().entries(tokenKey);
@@ -47,7 +50,7 @@ public class UserTokenRefreshInterceptor implements HandlerInterceptor {
         UserDTO user = BeanUtil.fillBeanWithMap(userMap, new UserDTO(), false);
         UserHolder.saveUser(user);
         //4. 刷新token有效期
-        stringRedisTemplate.expire(token, USER_TOKEN_TTL, TimeUnit.MINUTES);
+        stringRedisTemplate.expire(token, USER_TOKEN_TTL, TTL_UNIT);
         //5. 全部放行
         return true;
     }

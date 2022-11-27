@@ -17,6 +17,7 @@ public class UserDTO {
 
     private Long id;
     private String name;
-    private String avator;
+    private String avatar;
+
 
 }

@@ -24,6 +24,11 @@ public class Watch implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public Watch(Long userId, Long instanceId) {
+        this.userId = userId;
+        this.instanceId = instanceId;
+    }
+
     @TableId(value = "id", type = IdType.AUTO)
     private Long id;
 

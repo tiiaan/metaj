@@ -1,5 +1,6 @@
 package com.tiiaan.tbm.metaj.dto;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,9 +14,13 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginFormDTO {
+public class RegisterFormDTO {
 
     private String name;
     private String pwd;
+    private String email;
+    private String phone;
+    private String dept;
+    private String role;
 
 }

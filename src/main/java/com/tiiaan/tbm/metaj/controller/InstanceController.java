@@ -37,9 +37,27 @@ public class InstanceController {
 
 
     @GetMapping
-    public Result queryInstances() {
-        return Result.ok();
-        //return instanceService.queryInstances();
+    public Result queryInstances(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
+        return instanceService.queryInstances(curr);
+    }
+
+
+    @GetMapping("/watching/me")
+    public Result queryInstancesMe(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
+        return instanceService.queryInstancesMe(curr);
+    }
+
+
+
+    @PutMapping("/watch/{id}")
+    public Result watchInstance(@PathVariable("id") Long id) {
+        return instanceService.watchInstance(id);
+    }
+
+
+    @GetMapping("/watching/all/{id}")
+    public Result queryInstanceWatching(@PathVariable("id") Long id) {
+        return instanceService.queryInstanceWatching(id);
     }
 
 }
