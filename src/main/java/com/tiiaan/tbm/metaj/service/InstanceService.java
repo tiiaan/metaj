@@ -27,4 +27,6 @@ public interface InstanceService extends IService<Instance> {
 
     Result queryInstanceWatching(Long id);
 
+    Result queryInstancesCount();
+
 }

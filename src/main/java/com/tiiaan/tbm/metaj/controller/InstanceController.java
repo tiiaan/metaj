@@ -60,4 +60,9 @@ public class InstanceController {
         return instanceService.queryInstanceWatching(id);
     }
 
+    @GetMapping("/count")
+    public Result queryInstancesCount() {
+        return instanceService.queryInstancesCount();
+    }
+
 }

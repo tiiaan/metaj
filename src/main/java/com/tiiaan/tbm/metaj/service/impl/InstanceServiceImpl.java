@@ -7,6 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.tiiaan.tbm.metaj.cache.CacheClient;
+import com.tiiaan.tbm.metaj.dto.CountDTO;
 import com.tiiaan.tbm.metaj.dto.InstanceFormDTO;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.dto.UserDTO;
@@ -26,9 +27,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.tiiaan.tbm.metaj.common.SysConstants.*;
@@ -57,6 +56,8 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     private WatchService watchService;
     @Resource
     private UserService userService;
+    @Resource
+    private InstanceMapper instanceMapper;
 
 
     @Override
@@ -162,6 +163,18 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
                 .stream().map(user -> BeanUtil.copyProperties(user, UserDTO.class))
                 .collect(Collectors.toList());
         return Result.ok(users);
+    }
+
+
+    @Override
+    public Result queryInstancesCount() {
+        //0停机, 1健康, 2报警, 3故障
+        List<CountDTO> countDTOS = instanceMapper.queryCountGroupByHealth();
+        HashMap<String, Integer> map = new HashMap<>();
+        for (CountDTO countDTO : countDTOS) {
+            map.put("h" + countDTO.getHealth(), countDTO.getCnt());
+        }
+        return Result.ok(map);
     }
 
 

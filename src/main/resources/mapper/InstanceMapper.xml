@@ -27,4 +27,13 @@
         id, user_id, name, project, segments, mileage, longitude, latitude, health, current_segment, warns, issues, unsolved_issues, watching, create_time, update_time
     </sql>
 
+
+
+    <select id="queryCountGroupByHealth" resultMap="byFiledId">
+        select health, count(1) as cnt from tb_instance group by health
+    </select>
+    <resultMap id="byFiledId" type="com.tiiaan.tbm.metaj.dto.CountDTO">
+        <result column="health" property="health"/>
+        <result column="cnt" property="cnt"/>
+    </resultMap>
 </mapper>
