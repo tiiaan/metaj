@@ -22,4 +22,15 @@
         id, user_id, instance_id, level, title, description, tracking, comments, closed, create_time, update_time
     </sql>
 
+
+    <select id="queryIssuesByInstanceIdDynamic" resultType="com.tiiaan.tbm.metaj.entity.Issue">
+        SELECT *  FROM tb_issue
+        <where>
+            <if test="instanceId != -1">AND instance_id = #{instanceId} </if>
+            <if test="closed != -1">AND closed = #{closed} </if>
+            <if test="userId != -1">AND user_id = #{userId} </if>
+        </where>
+        ORDER BY time DESC LIMIT #{start}, #{pageSize}
+    </select>
+
 </mapper>

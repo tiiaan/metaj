@@ -21,4 +21,10 @@ public interface IssueService extends IService<Issue> {
 
     Result deleteFile(String filename);
 
+    Result queryIssuesByInstanceId(Long instanceId, Integer curr, Integer closed, Boolean ofMe);
+
+    Result closeIssue(Long id);
+
+    //Result trackIssue(Long id);
+
 }

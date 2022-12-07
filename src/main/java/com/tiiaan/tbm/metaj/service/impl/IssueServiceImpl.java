@@ -18,12 +18,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
 import java.time.Clock;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
 import static com.tiiaan.tbm.metaj.common.SysConstants.*;
 
 /**
@@ -47,8 +55,11 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
     private ApplicationEventPublisher applicationEventPublisher;
     @Resource
     private InstanceService instanceService;
+    @Resource
+    private IssueMapper issueMapper;
 
 
+    @Transactional
     @Override
     public Result publishIssue(Issue issue) {
         //获取用户
@@ -98,6 +109,80 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         FileUtil.del(file);
         return Result.ok();
     }
+
+
+
+    @Override
+    public Result queryIssuesByInstanceId(Long instanceId, Integer curr, Integer closed, Boolean ofMe) {
+        Long userId = UserHolder.getUser().getId();
+        userId = ofMe ? userId : -1;
+        Integer start = (curr - 1) * ISSUE_PAGE_SIZE;
+        List<Issue> issues = issueMapper.queryIssuesByInstanceIdDynamic(
+                start,
+                ISSUE_PAGE_SIZE,
+                instanceId,
+                closed,
+                userId);
+        return Result.ok(issues);
+    }
+
+
+    @Transactional
+    @Override
+    public Result closeIssue(Long id) {
+        log.info("close issue=[{}]", id);
+        Long userId = UserHolder.getUser().getId();
+        Issue issue = this.getById(id);
+        ErrorEnum.DB_QUERY_FAIL.assertNotNull(issue);
+        ErrorEnum.ONLY_CLOSED_BY_OWNER.assertIsTrue(Objects.equals(issue.getUserId(), userId));
+        this.update().setSql("closed = 1").eq("id", id).update();
+        Long instanceId= issue.getInstanceId();
+        instanceService.update().setSql("health = if(unsolved_issues = 1, 1, 3)").setSql("unsolved_issues = unsolved_issues - 1").eq("id", instanceId).update();
+        String key = CACHE_INSTANCE_KEY + instanceId;
+        stringRedisTemplate.delete(key);
+        return Result.ok();
+    }
+
+
+    //@Override
+    //public Result trackIssue(Long id) {
+    //    Long userId = UserHolder.getUser().getId();
+    //    String userKey = USER_TRACKING_KEY + userId;
+    //    String issueKey = ISSUE_TRACKING_KEY + id;
+    //    Boolean tracked = stringRedisTemplate.opsForSet().isMember(userKey, id.toString());
+    //    if (Boolean.FALSE.equals(tracked)) {
+    //        stringRedisTemplate.opsForValue()
+    //        stringRedisTemplate.opsForSet().add(userKey, id.toString());
+    //    }
+    //}
+
+
+
+    //public Result watchInstance(Long id) {
+    //    //获取用户
+    //    Long userId = UserHolder.getUser().getId();
+    //    String userKey = USER_WATCHING_KEY + userId;
+    //    String instKey = INSTANCE_WATCHING_KEY + id;
+    //    //判断用户是否已经关注过了
+    //    Boolean watched = stringRedisTemplate.opsForSet().isMember(userKey, id.toString());
+    //    if (Boolean.FALSE.equals(watched)) {
+    //        //watchService.save(new Watch(userId, id));
+    //        //update().setSql("watching = watching + 1").eq("id", id).update();
+    //        //stringRedisTemplate.opsForZSet().add(instKey, userId.toString(), System.currentTimeMillis());
+    //        stringRedisTemplate.opsForValue().increment(instKey);
+    //        stringRedisTemplate.opsForSet().add(userKey, id.toString());
+    //        log.info("user [{}] watch instance [{}]", userId, id);
+    //    } else {
+    //        //watchService.remove(new QueryWrapper<Watch>().eq("user_id", userId).eq("instance_id", id));
+    //        //update().setSql("watching = watching - 1").eq("id", id).update();
+    //        //stringRedisTemplate.opsForZSet().remove(instKey, userId.toString());
+    //        stringRedisTemplate.opsForSet().remove(userKey, id.toString());
+    //        stringRedisTemplate.opsForValue().decrement(instKey);
+    //        log.info("user [{}] unwatch instance [{}]", userId, id);
+    //    }
+    //    return Result.ok();
+    //}
+
 
 
     private String getNewFilename(String originalFilename) {

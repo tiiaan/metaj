@@ -16,6 +16,7 @@ import com.tiiaan.tbm.metaj.dto.UserDTO;
 import com.tiiaan.tbm.metaj.entity.Instance;
 import com.tiiaan.tbm.metaj.entity.Segment;
 import com.tiiaan.tbm.metaj.entity.Watch;
+import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.mapper.InstanceMapper;
 import com.tiiaan.tbm.metaj.service.InstanceService;
@@ -366,6 +367,16 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         }
         Integer count = watchService.query().eq("user_id", userId).eq("instance_id", id).count();
         return Result.ok(count != 0);
+    }
+
+
+
+
+    @Override
+    public Result queryIssuesCount(Long instanceId) {
+        Instance instance = getById(instanceId);
+        ErrorEnum.DB_QUERY_FAIL.assertNotNull(instance);
+        return Result.ok(instance.getIssues());
     }
 
 

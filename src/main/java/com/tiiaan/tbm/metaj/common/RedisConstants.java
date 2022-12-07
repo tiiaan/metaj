@@ -32,8 +32,10 @@ public class RedisConstants {
     public static final String INSTANCE_TOKEN = "inst:tok:";
     public static final String INSTANCE_REGISTER_CODE = "inst:code:";
     public static final String INSTANCE_WATCHING_KEY = "inst:watch:";
-
     public static final String USER_WATCHING_KEY = "user:watch:";
+
+    public static final String ISSUE_TRACKING_KEY = "issue:track:";
+    public static final String USER_TRACKING_KEY = "user:track:";
 
     public static final String CACHE_INSTANCE_KEY = "cache:inst:";
     public static final Long CACHE_INSTANCE_TTL = 3600L;

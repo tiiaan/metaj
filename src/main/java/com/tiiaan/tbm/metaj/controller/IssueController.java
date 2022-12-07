@@ -32,6 +32,11 @@ public class IssueController {
         return issueService.publishIssue(issue);
     }
 
+    @PutMapping("/close/{id}")
+    public Result closeIssue(@PathVariable("id") Long id) {
+        return issueService.closeIssue(id);
+    }
+
 
     @PostMapping("/file/upload")
     public Result uploadFile(@RequestParam("file") MultipartFile file) {
@@ -43,5 +48,23 @@ public class IssueController {
     public Result deleteFile(@RequestParam("filename") String filename) {
         return issueService.deleteFile(filename);
     }
+
+
+    @GetMapping("/query")
+    public Result queryIssuesByInstanceId(@RequestParam(value = "instanceId") Long instanceId,
+                                          @RequestParam(value = "curr", defaultValue = "1") Integer curr,
+                                          @RequestParam(value = "closed", defaultValue = "-1") Integer closed,
+                                          @RequestParam(value = "ofMe", defaultValue = "false") Boolean ofMe) {
+        return issueService.queryIssuesByInstanceId(instanceId, curr, closed, ofMe);
+    }
+
+
+
+
+    //@PutMapping("/track/{id}")
+    //public Result trackIssue(@PathVariable("id") Long id) {
+    //    return issueService.trackIssue(id);
+    //}
+
 
 }

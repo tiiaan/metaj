@@ -51,8 +51,8 @@ public class Issue implements Serializable {
     @TableField("images")
     private String images;
 
-    @TableField("tracking")
-    private Integer tracking;
+    //@TableField("tracking")
+    //private Integer tracking;
 
     @TableField("comments")
     private Integer comments;

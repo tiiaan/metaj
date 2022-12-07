@@ -19,8 +19,10 @@ public enum ErrorEnum implements IFooExceptionAssert {
 
     UPLOAD_ERROR("03001", "图片上传失败"),
     INVALID_FILENAME("03002", "图片名称错误"),
+    ONLY_CLOSED_BY_OWNER("03003", "报告只能被发布者关闭"),
 
-    DB_UPDATE_FAIL("05001", "数据库更新失败");
+    DB_UPDATE_FAIL("05001", "数据库更新失败"),
+    DB_QUERY_FAIL("05002", "数据库查询失败");
 
 
     private String code;

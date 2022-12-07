@@ -96,6 +96,19 @@ public class InstanceController {
 
 
     /**
+     * 故障报告数
+     * @param instanceId
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    @GetMapping("/issues/count")
+    public Result queryIssuesCount(@RequestParam(value = "instanceId") Long instanceId) {
+        return instanceService.queryIssuesCount(instanceId);
+    }
+
+
+
+    /**
      * 查询某一台实例是否被当前用户关注
      * @param id
      * @return com.tiiaan.tbm.metaj.dto.Result
