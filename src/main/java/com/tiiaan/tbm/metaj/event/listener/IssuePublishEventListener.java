@@ -38,22 +38,24 @@ public class IssuePublishEventListener {
         ErrorEnum.DB_UPDATE_FAIL.assertIsTrue(updated);
         String key = CACHE_INSTANCE_KEY + instanceId;
         stringRedisTemplate.delete(key);
-        log.info("event update tb_instance instanceId=[{}]", instanceId);
+        log.info("[{}]event update tb_instance instanceId=[{}]", Thread.currentThread().getName(), instanceId);
     }
 
-    @Async
+
+    @Async("issueTaskExecutor")
     @EventListener(IssuePublishFeedEvent.class)
     public void feed(IssuePublishFeedEvent event) {
         Long issueId = event.getIssueId();
-        log.info("async event feed issue=[{}]", issueId);
+        log.info("[{}]async event feed issue=[{}]", Thread.currentThread().getName(), issueId);
     }
 
-    @Async
+
+    @Async("issueTaskExecutor")
     @EventListener(IssuePublishPersistenceEvent.class)
     public void persistence(IssuePublishPersistenceEvent event) {
         Long time = event.getTime();
         Long instanceId = event.getInstanceId();
-        log.info("async event persistence instance=[{}] time=[{}]", instanceId, time);
+        log.info("[{}]async event persistence instance=[{}] time=[{}]", Thread.currentThread().getName(), instanceId, time);
     }
 
 }

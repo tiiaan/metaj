@@ -70,7 +70,7 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
             applicationEventPublisher.publishEvent(new IssuePublishPersistenceEvent(this, issue.getInstanceId(), issue.getTime()));
         }
 
-        log.info("publish success issue=[{}]", issueId);
+        log.info("[{}]publish success issue=[{}]", Thread.currentThread().getName(), issueId);
         return Result.ok(issueId);
     }
 
