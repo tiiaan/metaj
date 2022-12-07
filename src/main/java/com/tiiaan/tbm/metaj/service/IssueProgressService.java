@@ -1,5 +1,6 @@
 package com.tiiaan.tbm.metaj.service;
 
+import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.IssueProgress;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -12,5 +13,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
  * @since 2023-02-26
  */
 public interface IssueProgressService extends IService<IssueProgress> {
+
+    Result queryByIssueId(Long issueId);
 
 }

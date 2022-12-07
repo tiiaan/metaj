@@ -1,8 +1,11 @@
 package com.tiiaan.tbm.metaj.event.listener;
 
+import com.tiiaan.tbm.metaj.common.ProgressEnum;
+import com.tiiaan.tbm.metaj.entity.IssueProgress;
 import com.tiiaan.tbm.metaj.event.IssuePublishEvent;
 import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.service.InstanceService;
+import com.tiiaan.tbm.metaj.service.IssueProgressService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,6 +32,8 @@ public class IssuePublishEventListener {
     private StringRedisTemplate stringRedisTemplate;
     @Resource
     private InstanceService instanceService;
+    @Resource
+    private IssueProgressService issueProgressService;
 
 
     @EventListener(IssuePublishEvent.class)
@@ -42,6 +47,17 @@ public class IssuePublishEventListener {
     }
 
 
+    @EventListener(IssuePublishEvent.class)
+    public void updateProgress(IssuePublishEvent event) {
+        Long issueId = event.getIssue().getId();
+        Long userId = event.getIssue().getUserId();
+        IssueProgress issueProgress = new IssueProgress();
+        issueProgress.setIssueId(issueId);
+        issueProgress.setUserId(userId);
+        issueProgress.setContent(ProgressEnum.PUBLISH.getContent());
+        issueProgressService.save(issueProgress);
+        log.info("[{}]event update tb_issue_progress", Thread.currentThread().getName());
+    }
 
 
     @Async("issueTaskExecutor")

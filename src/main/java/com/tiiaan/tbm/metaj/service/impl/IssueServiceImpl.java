@@ -5,7 +5,9 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.Issue;
+import com.tiiaan.tbm.metaj.event.IssueClosedEvent;
 import com.tiiaan.tbm.metaj.event.IssuePublishEvent;
+import com.tiiaan.tbm.metaj.event.IssueSolvedEvent;
 import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.mapper.IssueMapper;
@@ -123,12 +125,10 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         ErrorEnum.DB_QUERY_FAIL.assertNotNull(issue);
         ErrorEnum.ONLY_CLOSED_BY_OWNER.assertIsTrue(Objects.equals(issue.getUserId(), userId));
         this.update().setSql("closed = 1").eq("id", id).update();
-        Long instanceId= issue.getInstanceId();
-        instanceService.update().setSql("unclosed_issues = unclosed_issues - 1").eq("id", instanceId).update();
-        String key = CACHE_INSTANCE_KEY + instanceId;
-        stringRedisTemplate.delete(key);
+        applicationEventPublisher.publishEvent(new IssueClosedEvent(this, issue));
         return Result.ok();
     }
+
 
 
     @Transactional
@@ -140,11 +140,14 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         ErrorEnum.DB_QUERY_FAIL.assertNotNull(issue);
         ErrorEnum.ONLY_CLOSED_BY_OWNER.assertIsTrue(Objects.equals(issue.getUserId(), userId));
         this.update().setSql("solved = 1").eq("id", id).update();
-        Long instanceId= issue.getInstanceId();
-        instanceService.update().setSql("health = if(unsolved_issues = 1, 1, 3)").setSql("unsolved_issues = unsolved_issues - 1").eq("id", instanceId).update();
-        String key = CACHE_INSTANCE_KEY + instanceId;
-        stringRedisTemplate.delete(key);
+        applicationEventPublisher.publishEvent(new IssueSolvedEvent(this, issue));
         return Result.ok();
+    }
+
+    
+    @Override
+    public Result queryIssueById(Long id) {
+        return Result.ok(getById(id));
     }
 
 

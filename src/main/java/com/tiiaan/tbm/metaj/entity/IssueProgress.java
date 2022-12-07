@@ -33,8 +33,8 @@ public class IssueProgress implements Serializable {
     @TableField("user_id")
     private Long userId;
 
-    @TableField("type")
-    private Integer type;
+    @TableField("content")
+    private String content;
 
     @TableField("create_time")
     private LocalDateTime createTime;

@@ -64,7 +64,10 @@ public class IssueController {
     }
 
 
-
+    @GetMapping("/{id}")
+    public Result queryIssueById(@PathVariable("id") Long id) {
+        return issueService.queryIssueById(id);
+    }
 
     //@PutMapping("/track/{id}")
     //public Result trackIssue(@PathVariable("id") Long id) {
