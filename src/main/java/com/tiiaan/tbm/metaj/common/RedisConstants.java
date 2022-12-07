@@ -40,6 +40,9 @@ public class RedisConstants {
     public static final String CACHE_INSTANCE_KEY = "cache:inst:";
     public static final Long CACHE_INSTANCE_TTL = 3600L;
 
+    public static final String CACHE_ISSUE_KEY = "cache:issue:";
+    public static final Long CACHE_ISSUE_TTL = 3600L;
+
     public static final String CACHE_INSTANCES_PAGE = "cache:inst:page:";
     public static final Long CACHE_INSTANCES_PAGE_TTL = 3600L;
 

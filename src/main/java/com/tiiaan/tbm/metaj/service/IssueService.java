@@ -25,6 +25,8 @@ public interface IssueService extends IService<Issue> {
 
     Result closeIssue(Long id);
 
+    Result solveIssue(Long id);
+
     //Result trackIssue(Long id);
 
 }

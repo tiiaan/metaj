@@ -5,9 +5,7 @@ import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.Issue;
-import com.tiiaan.tbm.metaj.event.IssuePublishFeedEvent;
-import com.tiiaan.tbm.metaj.event.IssuePublishInstanceEvent;
-import com.tiiaan.tbm.metaj.event.IssuePublishPersistenceEvent;
+import com.tiiaan.tbm.metaj.event.IssuePublishEvent;
 import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.mapper.IssueMapper;
@@ -24,12 +22,8 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
-import java.time.Clock;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
 import static com.tiiaan.tbm.metaj.common.SysConstants.*;
@@ -67,19 +61,12 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         issue.setUserId(userId);
 
         //保存报告
-        this.save(issue);
+        boolean saved = this.save(issue);
+        ErrorEnum.DB_UPDATE_FAIL.assertIsTrue(saved);
         Long issueId = issue.getId();
 
-        //同步修改tb_instance表
-        applicationEventPublisher.publishEvent(new IssuePublishInstanceEvent(this, issue.getInstanceId()));
-
-        //异步推送站内消息
-        applicationEventPublisher.publishEvent(new IssuePublishFeedEvent(this, issueId));
-
-        //异步持久化30分钟数据
-        if (issue.getDataset() == 1) {
-            applicationEventPublisher.publishEvent(new IssuePublishPersistenceEvent(this, issue.getInstanceId(), issue.getTime()));
-        }
+        //推送事件
+        applicationEventPublisher.publishEvent(new IssuePublishEvent(this, issue));
 
         log.info("[{}]publish success issue=[{}]", Thread.currentThread().getName(), issueId);
         return Result.ok(issueId);
@@ -136,6 +123,23 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         ErrorEnum.DB_QUERY_FAIL.assertNotNull(issue);
         ErrorEnum.ONLY_CLOSED_BY_OWNER.assertIsTrue(Objects.equals(issue.getUserId(), userId));
         this.update().setSql("closed = 1").eq("id", id).update();
+        Long instanceId= issue.getInstanceId();
+        instanceService.update().setSql("unclosed_issues = unclosed_issues - 1").eq("id", instanceId).update();
+        String key = CACHE_INSTANCE_KEY + instanceId;
+        stringRedisTemplate.delete(key);
+        return Result.ok();
+    }
+
+
+    @Transactional
+    @Override
+    public Result solveIssue(Long id) {
+        log.info("solve issue=[{}]", id);
+        Long userId = UserHolder.getUser().getId();
+        Issue issue = this.getById(id);
+        ErrorEnum.DB_QUERY_FAIL.assertNotNull(issue);
+        ErrorEnum.ONLY_CLOSED_BY_OWNER.assertIsTrue(Objects.equals(issue.getUserId(), userId));
+        this.update().setSql("solved = 1").eq("id", id).update();
         Long instanceId= issue.getInstanceId();
         instanceService.update().setSql("health = if(unsolved_issues = 1, 1, 3)").setSql("unsolved_issues = unsolved_issues - 1").eq("id", instanceId).update();
         String key = CACHE_INSTANCE_KEY + instanceId;

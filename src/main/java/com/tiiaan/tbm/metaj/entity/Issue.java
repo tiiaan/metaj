@@ -60,6 +60,9 @@ public class Issue implements Serializable {
     @TableField("closed")
     private Integer closed;
 
+    @TableField("solved")
+    private Integer solved;
+
     @TableField("create_time")
     private LocalDateTime createTime;
 

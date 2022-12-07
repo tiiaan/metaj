@@ -68,7 +68,8 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
     @Override
     public Result queryInstanceById(Long id) {
-        return Result.ok(getById(id));
+        return Result.ok(getInstanceByIdFromCache(id));
+        //return Result.ok(getById(id));
         //Instance instance = cacheClient.queryWithMutex(
         //        CACHE_INSTANCE_KEY, id, Instance.class, this::getById, CACHE_INSTANCE_TTL, TTL_UNIT);
         //fillInstanceWatching(instance);

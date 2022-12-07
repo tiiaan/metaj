@@ -1,9 +1,6 @@
 package com.tiiaan.tbm.metaj.event.listener;
 
-import com.tiiaan.tbm.metaj.event.IssuePublishFeedEvent;
-import com.tiiaan.tbm.metaj.event.IssuePublishInstanceEvent;
-import com.tiiaan.tbm.metaj.event.IssuePublishPersistenceEvent;
-import com.tiiaan.tbm.metaj.event.IssuePublishTrackEvent;
+import com.tiiaan.tbm.metaj.event.IssuePublishEvent;
 import com.tiiaan.tbm.metaj.exception.ErrorEnum;
 import com.tiiaan.tbm.metaj.service.InstanceService;
 import lombok.extern.slf4j.Slf4j;
@@ -34,10 +31,10 @@ public class IssuePublishEventListener {
     private InstanceService instanceService;
 
 
-    @EventListener(IssuePublishInstanceEvent.class)
-    public void updateInstance(IssuePublishInstanceEvent event) {
-        Long instanceId = event.getInstanceId();
-        boolean updated = instanceService.update().setSql("health = 3").setSql("issues = issues + 1").setSql("unsolved_issues = unsolved_issues + 1").eq("id", instanceId).update();
+    @EventListener(IssuePublishEvent.class)
+    public void updateInstance(IssuePublishEvent event) {
+        Long instanceId = event.getIssue().getInstanceId();
+        boolean updated = instanceService.update().setSql("health = 3").setSql("issues = issues + 1").setSql("unsolved_issues = unsolved_issues + 1").setSql("unclosed_issues = unclosed_issues + 1").eq("id", instanceId).update();
         ErrorEnum.DB_UPDATE_FAIL.assertIsTrue(updated);
         String key = CACHE_INSTANCE_KEY + instanceId;
         stringRedisTemplate.delete(key);
@@ -46,32 +43,23 @@ public class IssuePublishEventListener {
 
 
 
-    @Async("issueTaskExecutor")
-    @TransactionalEventListener(classes = IssuePublishTrackEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    public void track(IssuePublishTrackEvent event) {
-        Long userId = event.getUserId();
-        Long issueId = event.getIssueId();
-        String userKey = USER_TRACKING_KEY + userId;
-        stringRedisTemplate.opsForSet().add(userKey, issueId.toString());
-    }
-
 
     @Async("issueTaskExecutor")
-    //@EventListener(IssuePublishFeedEvent.class)
-    @TransactionalEventListener(classes = IssuePublishFeedEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    public void feed(IssuePublishFeedEvent event) {
-        Long issueId = event.getIssueId();
+    @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void feed(IssuePublishEvent event) {
+        Long issueId = event.getIssue().getId();
         log.info("[{}]async event feed issue=[{}]", Thread.currentThread().getName(), issueId);
     }
 
 
     @Async("issueTaskExecutor")
-    //@EventListener(IssuePublishPersistenceEvent.class)
-    @TransactionalEventListener(classes = IssuePublishPersistenceEvent.class, phase = TransactionPhase.AFTER_COMMIT)
-    public void persistence(IssuePublishPersistenceEvent event) {
-        Long time = event.getTime();
-        Long instanceId = event.getInstanceId();
-        log.info("[{}]async event persistence instance=[{}] time=[{}]", Thread.currentThread().getName(), instanceId, time);
+    @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void persistence(IssuePublishEvent event) {
+        if (event.getIssue().getDataset() == 1) {
+            Long time = event.getIssue().getTime();
+            Long instanceId = event.getIssue().getInstanceId();
+            log.info("[{}]async event persistence instance=[{}] time=[{}]", Thread.currentThread().getName(), instanceId, time);
+        }
     }
 
 }

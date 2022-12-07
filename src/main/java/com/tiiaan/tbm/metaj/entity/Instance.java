@@ -66,6 +66,9 @@ public class Instance implements Serializable {
     @TableField("unsolved_issues")
     private Integer unsolvedIssues;
 
+    @TableField("unclosed_issues")
+    private Integer unclosedIssues;
+
     @TableField("watching")
     private Integer watching;
 

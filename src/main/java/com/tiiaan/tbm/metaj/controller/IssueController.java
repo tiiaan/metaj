@@ -37,6 +37,11 @@ public class IssueController {
         return issueService.closeIssue(id);
     }
 
+    @PutMapping("/solve/{id}")
+    public Result solveIssue(@PathVariable("id") Long id) {
+        return issueService.solveIssue(id);
+    }
+
 
     @PostMapping("/file/upload")
     public Result uploadFile(@RequestParam("file") MultipartFile file) {
