@@ -70,7 +70,7 @@ public class Instance implements Serializable {
     private Integer unclosedIssues;
 
     @TableField("watching")
-    private Integer watching;
+    private Long watching;
 
     @TableField("create_time")
     private LocalDateTime createTime;

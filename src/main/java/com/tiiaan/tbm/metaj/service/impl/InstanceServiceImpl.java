@@ -253,7 +253,7 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         //instance.setIsWatching(score != null);
         Long id = instance.getId();
         instance.setIsWatching((Boolean) this.queryIsWatchingByCurrUser(id).getData());
-        instance.setWatching((Integer) this.queryWatchingCount(id).getData());
+        instance.setWatching((Long) this.queryWatchingCount(id).getData());
     }
 
 
@@ -298,7 +298,8 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
             //watchService.save(new Watch(userId, id));
             //update().setSql("watching = watching + 1").eq("id", id).update();
             //stringRedisTemplate.opsForZSet().add(instKey, userId.toString(), System.currentTimeMillis());
-            stringRedisTemplate.opsForValue().increment(instKey);
+            //stringRedisTemplate.opsForValue().increment(instKey);
+            stringRedisTemplate.opsForSet().add(instKey, userId.toString());
             stringRedisTemplate.opsForSet().add(userKey, id.toString());
             log.info("user [{}] watch instance [{}]", userId, id);
         } else {
@@ -306,7 +307,8 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
             //update().setSql("watching = watching - 1").eq("id", id).update();
             //stringRedisTemplate.opsForZSet().remove(instKey, userId.toString());
             stringRedisTemplate.opsForSet().remove(userKey, id.toString());
-            stringRedisTemplate.opsForValue().decrement(instKey);
+            stringRedisTemplate.opsForSet().remove(instKey, userId.toString());
+            //stringRedisTemplate.opsForValue().decrement(instKey);
             log.info("user [{}] unwatch instance [{}]", userId, id);
         }
         return Result.ok();
@@ -348,11 +350,15 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
     @Override
     public Result queryWatchingCount(Long id) {
         String instKey = INSTANCE_WATCHING_KEY + id;
-        String str = stringRedisTemplate.opsForValue().get(instKey);
-        if (str != null && str.length() != 0) {
-            return Result.ok(Integer.valueOf(str));
+        //String str = stringRedisTemplate.opsForValue().get(instKey);
+        //if (str != null && str.length() != 0) {
+        //    return Result.ok(Integer.valueOf(str));
+        //}
+        Long size = stringRedisTemplate.opsForSet().size(instKey);
+        if (size != null) {
+            return Result.ok(size);
         }
-        Integer count = getById(id).getWatching();
+        Long count = getById(id).getWatching();
         return Result.ok(count);
     }
 

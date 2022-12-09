@@ -15,6 +15,8 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 import javax.annotation.Resource;
+import java.util.Set;
+
 import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
 
 
@@ -77,6 +79,15 @@ public class IssuePublishEventListener {
     @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void feed(IssuePublishEvent event) {
         Long issueId = event.getIssue().getId();
+        Long instanceId = event.getIssue().getInstanceId();
+        String instKey = INSTANCE_WATCHING_KEY + instanceId;
+        Set<String> members = stringRedisTemplate.opsForSet().members(instKey);
+        if (members != null && !members.isEmpty()) {
+            for (String member : members) {
+                String feedKey = FEED_KEY + member;
+                stringRedisTemplate.opsForZSet().add(feedKey, issueId.toString(), System.currentTimeMillis());
+            }
+        }
         log.info("[{}]async event feed issue=[{}]", Thread.currentThread().getName(), issueId);
     }
 

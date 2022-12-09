@@ -57,4 +57,6 @@ public class RedisConstants {
     public static final String HI_PUBLISH_LOCK_KEY = "lock:publish:hi:";
     public static final Long HI_PUBLISH_LOCK_TTL = 1800L;
 
+    public static final String FEED_KEY = "feed:";
+
 }
