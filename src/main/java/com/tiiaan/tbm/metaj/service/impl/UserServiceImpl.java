@@ -100,6 +100,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public Result logout(String token) {
         String key = USER_TOKEN + token;
         stringRedisTemplate.delete(key);
+        log.info("user logout successfully [{}]", token);
         return Result.ok();
     }
 
