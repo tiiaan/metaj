@@ -87,6 +87,8 @@ public class IssuePublishEventListener {
             for (String member : members) {
                 String feedKey = FEED_KEY + member;
                 stringRedisTemplate.opsForZSet().add(feedKey, issueId.toString(), System.currentTimeMillis());
+                String unreadKey = FEED_UNREAD_KEY + member;
+                stringRedisTemplate.opsForValue().increment(unreadKey);
             }
         }
         log.info("[{}]async event feed issue=[{}]", Thread.currentThread().getName(), issueId);

@@ -37,6 +37,11 @@ public interface IssueService extends IService<Issue> {
 
     Result queryIssuesCountOfWatching();
 
+    Result resetUnread();
+
+    Result queryUnread();
+
+
     //Result trackIssue(Long id);
 
 }

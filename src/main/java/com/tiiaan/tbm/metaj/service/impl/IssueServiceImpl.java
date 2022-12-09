@@ -318,6 +318,24 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
     }
 
 
+    @Override
+    public Result resetUnread() {
+        Long userId = UserHolder.getUser().getId();
+        String unreadKey = FEED_UNREAD_KEY + userId;
+        stringRedisTemplate.opsForValue().set(unreadKey, "0");
+        return Result.ok();
+    }
+
+
+    @Override
+    public Result queryUnread() {
+        Long userId = UserHolder.getUser().getId();
+        String unreadKey = FEED_UNREAD_KEY + userId;
+        String unreadCount = stringRedisTemplate.opsForValue().get(unreadKey);
+        return Result.ok(unreadCount);
+    }
+
+
     //@Override
     //public Result trackIssue(Long id) {
     //    Long userId = UserHolder.getUser().getId();

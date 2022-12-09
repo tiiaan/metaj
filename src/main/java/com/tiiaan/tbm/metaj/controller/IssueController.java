@@ -103,6 +103,16 @@ public class IssueController {
         return issueService.queryIssuesCountOfWatching();
     }
 
+    @PutMapping("reset/of/watching/unread")
+    public Result resetUnread() {
+        return issueService.resetUnread();
+    }
+
+    @GetMapping("query/of/watching/unread")
+    public Result queryUnread() {
+        return issueService.queryUnread();
+    }
+
     //@PutMapping("/track/{id}")
     //public Result trackIssue(@PathVariable("id") Long id) {
     //    return issueService.trackIssue(id);
