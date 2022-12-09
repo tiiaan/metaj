@@ -15,7 +15,11 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface IssueService extends IService<Issue> {
 
+    Result tryAcquire(Long instanceId);
+
     Result publishIssue(Issue issue);
+
+    Result abortPublish(Long instanceId);
 
     Result uploadFile(MultipartFile file);
 

@@ -5,6 +5,7 @@ import com.tiiaan.tbm.metaj.dto.IssueFormDTO;
 import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.Issue;
 import com.tiiaan.tbm.metaj.service.IssueService;
+import org.apache.logging.log4j.message.ReusableMessage;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,10 +28,24 @@ public class IssueController {
     @Resource
     private IssueService issueService;
 
+
+    @GetMapping("/try")
+    public Result tryAcquire(@RequestParam("instanceId") Long instanceId) {
+        return issueService.tryAcquire(instanceId);
+    }
+
+
     @PostMapping("/publish")
     public Result publishIssue(@Valid @RequestBody Issue issue) {
         return issueService.publishIssue(issue);
     }
+
+
+    @PostMapping("/publish/abort")
+    public Result abortPublish(@RequestParam("instanceId") Long instanceId) {
+        return issueService.abortPublish(instanceId);
+    }
+
 
     @PutMapping("/close/{id}")
     public Result closeIssue(@PathVariable("id") Long id) {

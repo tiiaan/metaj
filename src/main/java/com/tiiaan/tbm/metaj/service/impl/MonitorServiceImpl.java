@@ -7,7 +7,6 @@ import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.holder.InstanceHolder;
 import com.tiiaan.tbm.metaj.holder.UserHolder;
 import com.tiiaan.tbm.metaj.service.MonitorService;
-import com.tiiaan.tbm.metaj.websocket.WebSocketServer;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +27,6 @@ public class MonitorServiceImpl implements MonitorService {
 
     @Resource
     private StringRedisTemplate stringRedisTemplate;
-    @Resource
-    private WebSocketServer webSocketServer;
 
 
     @Override

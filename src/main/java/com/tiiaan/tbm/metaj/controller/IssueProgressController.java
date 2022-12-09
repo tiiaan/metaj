@@ -20,7 +20,7 @@ import javax.annotation.Resource;
  * @since 2023-02-26
  */
 @RestController
-@RequestMapping("/issue-progress")
+@RequestMapping("/issue/progress")
 public class IssueProgressController {
 
     @Resource

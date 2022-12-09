@@ -46,4 +46,15 @@ public class RedisConstants {
     public static final String CACHE_INSTANCES_PAGE = "cache:inst:page:";
     public static final Long CACHE_INSTANCES_PAGE_TTL = 3600L;
 
+
+
+    public static final String TRY_PUBLISH_LOCK_KEY = "lock:publish:try:";
+    public static final Long TRY_PUBLISH_LOCK_TTL = 3600L;
+
+    public static final String LO_PUBLISH_LOCK_KEY = "lock:publish:lo:";
+    public static final Long LO_PUBLISH_LOCK_TTL = 300L;
+
+    public static final String HI_PUBLISH_LOCK_KEY = "lock:publish:hi:";
+    public static final Long HI_PUBLISH_LOCK_TTL = 1800L;
+
 }

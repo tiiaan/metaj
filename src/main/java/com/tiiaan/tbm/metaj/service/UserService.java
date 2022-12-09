@@ -6,6 +6,8 @@ import com.tiiaan.tbm.metaj.dto.Result;
 import com.tiiaan.tbm.metaj.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * <p>
  *  服务类

@@ -1,9 +1,13 @@
 package com.tiiaan.tbm.metaj.controller;
 
 
-import org.springframework.web.bind.annotation.RequestMapping;
+import com.tiiaan.tbm.metaj.dto.Result;
+import com.tiiaan.tbm.metaj.entity.Issue;
+import com.tiiaan.tbm.metaj.service.IssueCommentService;
+import com.tiiaan.tbm.metaj.service.IssueService;
+import org.springframework.web.bind.annotation.*;
 
-import org.springframework.web.bind.annotation.RestController;
+import javax.annotation.Resource;
 
 /**
  * <p>
@@ -14,7 +18,15 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2023-02-26
  */
 @RestController
-@RequestMapping("/issue-comment")
+@RequestMapping("/issue/comment")
 public class IssueCommentController {
+
+    @Resource
+    private IssueCommentService issueCommentService;
+
+    @PostMapping("/add")
+    public Result add(@RequestBody Issue issue) {
+        return issueCommentService.add(issue);
+    }
 
 }

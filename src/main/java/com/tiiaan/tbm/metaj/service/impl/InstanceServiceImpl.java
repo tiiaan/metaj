@@ -168,43 +168,43 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
 
 
 
-    public Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health) {
-        //先去缓存取
-        //String key = CACHE_INSTANCES_PAGE + curr;
-        //String json = stringRedisTemplate.opsForValue().get(key);
-        //if (json != null && json.length() != 0) {
-        //    log.info("cache");
-        //    List<Instance> instances = JSONUtil.toList(json, Instance.class);
-        //    instances.forEach(this::fillInstanceWatching);
-        //    return Result.ok(instances);
-        //}
-        //if (json != null) {
-        //    return null;
-        //}
-        List<Long> ids = null;
-        if (health == -1) {
-            ids = instanceMapper.queryIdsOrderBy((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
-        } else {
-            ids = instanceMapper.queryIdsOrderByWithHealth((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
-        }
-        ArrayList<Instance> instances = new ArrayList<>();
-        for (Long id : ids) {
-            instances.add(this.getInstanceByIdFromCache(id));
-        }
-        return Result.ok(instances);
-        //
-        ////如果缓存中没有，就去查询
-        //Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        //if (page == null) {
-        //    stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
-        //    return null;
-        //}
-        //List<Instance> instances = page.getRecords();
-        ////补充当前用户的watch信息
-        //instances.forEach(this::fillInstanceWatching);
-        //stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
-        //return Result.ok(instances);
-    }
+    //public Result queryInstancesOrderBy(Integer curr, String byWhat, Integer health) {
+    //    //先去缓存取
+    //    //String key = CACHE_INSTANCES_PAGE + curr;
+    //    //String json = stringRedisTemplate.opsForValue().get(key);
+    //    //if (json != null && json.length() != 0) {
+    //    //    log.info("cache");
+    //    //    List<Instance> instances = JSONUtil.toList(json, Instance.class);
+    //    //    instances.forEach(this::fillInstanceWatching);
+    //    //    return Result.ok(instances);
+    //    //}
+    //    //if (json != null) {
+    //    //    return null;
+    //    //}
+    //    List<Long> ids = null;
+    //    if (health == -1) {
+    //        ids = instanceMapper.queryIdsOrderBy((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+    //    } else {
+    //        ids = instanceMapper.queryIdsOrderByWithHealth((curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
+    //    }
+    //    ArrayList<Instance> instances = new ArrayList<>();
+    //    for (Long id : ids) {
+    //        instances.add(this.getInstanceByIdFromCache(id));
+    //    }
+    //    return Result.ok(instances);
+    //    //
+    //    ////如果缓存中没有，就去查询
+    //    //Page<Instance> page = this.query().page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+    //    //if (page == null) {
+    //    //    stringRedisTemplate.opsForValue().set(key, "", 120L, TTL_UNIT);
+    //    //    return null;
+    //    //}
+    //    //List<Instance> instances = page.getRecords();
+    //    ////补充当前用户的watch信息
+    //    //instances.forEach(this::fillInstanceWatching);
+    //    //stringRedisTemplate.opsForValue().set(key, JSONUtil.toJsonStr(instances), CACHE_INSTANCES_PAGE_TTL, TTL_UNIT);
+    //    //return Result.ok(instances);
+    //}
 
 
     private Instance getInstanceByIdFromCache(Long id) {
@@ -214,33 +214,33 @@ public class InstanceServiceImpl extends ServiceImpl<InstanceMapper, Instance> i
         return instance;
     }
 
-
-    public Result queryInstancesMe(Integer curr, String byWhat, Integer health) {
-        Long userId = UserHolder.getUser().getId();
-        String key = USER_WATCHING_KEY + userId;
-        Set<String> idStrs = stringRedisTemplate.opsForSet().members(key);
-        if (idStrs == null || idStrs.isEmpty()) {
-            return Result.ok(Collections.emptyList());
-        }
-        List<Long> ids = idStrs.stream().map(Long::valueOf).collect(Collectors.toList());
-
-        List<Long> idsRes = null;
-        if (health == -1) {
-            idsRes = instanceMapper.queryIdsOfMeOrderBy(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
-        } else {
-            idsRes = instanceMapper.queryIdsOfMeOrderByWithHealth(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
-        }
-        ArrayList<Instance> instances = new ArrayList<>();
-        for (Long id : idsRes) {
-            instances.add(this.getInstanceByIdFromCache(id));
-        }
-        return Result.ok(instances);
-
-        //Page<Instance> page = this.query().in("id", ids).page(new Page<>(curr, INSTANCE_PAGE_SIZE));
-        //List<Instance> instances = page.getRecords();
-        //instances.forEach(this::fillInstanceWatching);
-        //return Result.ok(instances);
-    }
+    //
+    //public Result queryInstancesMe(Integer curr, String byWhat, Integer health) {
+    //    Long userId = UserHolder.getUser().getId();
+    //    String key = USER_WATCHING_KEY + userId;
+    //    Set<String> idStrs = stringRedisTemplate.opsForSet().members(key);
+    //    if (idStrs == null || idStrs.isEmpty()) {
+    //        return Result.ok(Collections.emptyList());
+    //    }
+    //    List<Long> ids = idStrs.stream().map(Long::valueOf).collect(Collectors.toList());
+    //
+    //    List<Long> idsRes = null;
+    //    if (health == -1) {
+    //        idsRes = instanceMapper.queryIdsOfMeOrderBy(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat);
+    //    } else {
+    //        idsRes = instanceMapper.queryIdsOfMeOrderByWithHealth(ids, (curr - 1) * INSTANCE_PAGE_SIZE, INSTANCE_PAGE_SIZE, byWhat, health);
+    //    }
+    //    ArrayList<Instance> instances = new ArrayList<>();
+    //    for (Long id : idsRes) {
+    //        instances.add(this.getInstanceByIdFromCache(id));
+    //    }
+    //    return Result.ok(instances);
+    //
+    //    //Page<Instance> page = this.query().in("id", ids).page(new Page<>(curr, INSTANCE_PAGE_SIZE));
+    //    //List<Instance> instances = page.getRecords();
+    //    //instances.forEach(this::fillInstanceWatching);
+    //    //return Result.ok(instances);
+    //}
 
 
 

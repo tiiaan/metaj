@@ -62,6 +62,19 @@ public class IssuePublishEventListener {
 
     @Async("issueTaskExecutor")
     @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    public void setKey(IssuePublishEvent event) {
+        Long issueId = event.getIssue().getId();
+        Long instanceId = event.getIssue().getInstanceId();
+        String hiKey = HI_PUBLISH_LOCK_KEY + instanceId;
+        stringRedisTemplate.opsForValue().set(hiKey, issueId.toString(), HI_PUBLISH_LOCK_TTL, TTL_UNIT);
+        String tryLockKey = TRY_PUBLISH_LOCK_KEY + instanceId;
+        stringRedisTemplate.delete(tryLockKey);
+        log.info("[{}]event unlock acquireKey and set 30minKey", Thread.currentThread().getName());
+    }
+
+
+    @Async("issueTaskExecutor")
+    @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
     public void feed(IssuePublishEvent event) {
         Long issueId = event.getIssue().getId();
         log.info("[{}]async event feed issue=[{}]", Thread.currentThread().getName(), issueId);

@@ -33,9 +33,6 @@ public class IssueComment implements Serializable {
     @TableField("issue_id")
     private Long issueId;
 
-    @TableField("progress_id")
-    private Long progressId;
-
     @TableField("content")
     private String content;
 

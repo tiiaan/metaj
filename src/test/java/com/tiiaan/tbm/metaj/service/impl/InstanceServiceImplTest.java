@@ -56,8 +56,8 @@ public class InstanceServiceImplTest {
             int count = random.nextInt(50000) + 9000;
             InstanceFormDTO instance = InstanceFormDTO.builder().userId(users[random.nextInt(users.length)]).project(getName())
                     .segments(count).mileage((Long) Math.round(count * 1.5)).longitude(30.532772 + random.nextInt(15)).latitude(120.124219 + random.nextInt(15)).build();
-            Result result = instanceService.addInstance(instance);
-            System.out.println(result.getData());
+            //Result result = instanceService.addInstance(instance);
+            //System.out.println(result.getData());
         }
 
     }

@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.tiiaan.tbm.metaj.dto.Result;
+import com.tiiaan.tbm.metaj.dto.TryAcquireResultDTO;
 import com.tiiaan.tbm.metaj.entity.Issue;
 import com.tiiaan.tbm.metaj.event.IssueClosedEvent;
 import com.tiiaan.tbm.metaj.event.IssuePublishEvent;
@@ -14,6 +15,7 @@ import com.tiiaan.tbm.metaj.mapper.IssueMapper;
 import com.tiiaan.tbm.metaj.service.InstanceService;
 import com.tiiaan.tbm.metaj.service.IssueService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.tiiaan.tbm.metaj.util.SnowflakeId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -53,6 +55,55 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
     private InstanceService instanceService;
     @Resource
     private IssueMapper issueMapper;
+    @Resource
+    private SnowflakeId snowflakeId;
+
+
+    /**
+     * 尝试获取发布资格
+     * @param instanceId
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    @Override
+    public Result tryAcquire(Long instanceId) {
+        String issueId;
+        Long userId = UserHolder.getUser().getId();
+
+        //校验是否有5分钟内发布的报告，有的话直接跳转过去
+        //String loKey = LO_PUBLISH_LOCK_KEY + instanceId;
+        //issueId = stringRedisTemplate.opsForValue().get(loKey);
+        //if (issueId != null && issueId.length() != 0) {
+        //    return Result.ok(new TryAcquireResultDTO(2, Long.valueOf(issueId)));
+        //}
+
+        //校验是否有30分钟内发布的报告，有的话弹出对话框询问一下
+        //String hiKey = HI_PUBLISH_LOCK_KEY + instanceId;
+        //issueId = stringRedisTemplate.opsForValue().get(hiKey);
+        //if (issueId != null && issueId.length() != 0) {
+        //    log.info("user[{}] find published issue in 30 min, issueId=[{}]", userId, issueId);
+        //    return Result.ok(new TryAcquireResultDTO(2, issueId));
+        //}
+        //log.info("user[{}] find no published issue in 30 min", userId);
+
+        //没有符合条件的已发布报告，则尝试获取锁，获取到了就可以发布，获取不到可以先填写补充信息
+        String tryLockKey = TRY_PUBLISH_LOCK_KEY + instanceId;
+        issueId = snowflakeId.nextId().toString();
+        Boolean getLock = stringRedisTemplate.opsForValue().setIfAbsent(tryLockKey, issueId, TRY_PUBLISH_LOCK_TTL, TTL_UNIT);
+        if (Boolean.FALSE.equals(getLock)) {
+            issueId = stringRedisTemplate.opsForValue().get(tryLockKey);
+            if (issueId != null && issueId.length() != 0) {
+                log.info("user[{}] acquire lock fail, issueId=[{}]", userId, issueId);
+                return Result.ok(new TryAcquireResultDTO(0, issueId));
+            }
+        }
+
+        //获取到了就可以发布
+        log.info("user[{}] acquire lock success, issueId=[{}] <<<<<<<<<<<<<<<<<<<<<<<", userId, issueId);
+        return Result.ok(new TryAcquireResultDTO(1, issueId));
+
+    }
+
 
 
     @Transactional
@@ -74,6 +125,24 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         return Result.ok(issueId);
     }
 
+
+    /**
+     * 取消发布
+     * @param instanceId
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    @Override
+    public Result abortPublish(Long instanceId) {
+
+        //释放持有的发布锁
+        String tryLockKey = TRY_PUBLISH_LOCK_KEY + instanceId;
+        stringRedisTemplate.delete(tryLockKey);
+
+
+        return null;
+
+    }
 
 
     @Override
@@ -144,7 +213,7 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         return Result.ok();
     }
 
-    
+
     @Override
     public Result queryIssueById(Long id) {
         return Result.ok(getById(id));
