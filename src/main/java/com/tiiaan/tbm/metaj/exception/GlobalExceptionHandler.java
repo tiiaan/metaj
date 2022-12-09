@@ -23,6 +23,8 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 @Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -102,6 +104,12 @@ public class GlobalExceptionHandler {
         return msg.toString();
     }
 
+
+    @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
+    public Result handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
+        log.info("数据库异常[{}][请勿重复提交][{}]", ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES.getCode(), e.getMessage());
+        return Result.fail(ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES);
+    }
 
 
     /**

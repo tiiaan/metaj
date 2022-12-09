@@ -113,16 +113,28 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
         Long userId = UserHolder.getUser().getId();
         issue.setUserId(userId);
 
+        //token校验幂等
+        Long issueId = issue.getId();
+        ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES.assertIsFalse(isSubmitted(issue));
+
         //保存报告
         boolean saved = this.save(issue);
         ErrorEnum.DB_UPDATE_FAIL.assertIsTrue(saved);
-        Long issueId = issue.getId();
 
         //推送事件
         applicationEventPublisher.publishEvent(new IssuePublishEvent(this, issue));
 
         log.info("[{}]publish success issue=[{}]", Thread.currentThread().getName(), issueId);
         return Result.ok(issueId);
+    }
+
+
+    private boolean isSubmitted(Issue issue) {
+        Long instanceId = issue.getInstanceId();
+        Long issueId = issue.getId();
+        String tryLockKey = TRY_PUBLISH_LOCK_KEY + instanceId;
+        String check = stringRedisTemplate.opsForValue().get(tryLockKey);
+        return check == null || check.length() == 0 || !check.equals(issueId.toString());
     }
 
 

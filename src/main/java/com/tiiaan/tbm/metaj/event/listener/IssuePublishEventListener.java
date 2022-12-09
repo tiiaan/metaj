@@ -64,6 +64,7 @@ public class IssuePublishEventListener {
 
     @Async("issueTaskExecutor")
     @TransactionalEventListener(classes = IssuePublishEvent.class, phase = TransactionPhase.AFTER_COMMIT)
+    //@EventListener(IssuePublishEvent.class)
     public void setKey(IssuePublishEvent event) {
         Long issueId = event.getIssue().getId();
         Long instanceId = event.getIssue().getInstanceId();
