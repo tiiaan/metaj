@@ -33,6 +33,10 @@ public interface IssueService extends IService<Issue> {
 
     Result queryIssueById(Long id);
 
+    Result queryIssuesOfWatching(Integer curr);
+
+    Result queryIssuesCountOfWatching();
+
     //Result trackIssue(Long id);
 
 }

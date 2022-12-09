@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
             AsyncRequestTimeoutException.class
     })
     public Result handleServletException(Exception e) {
-        log.info("请求分发异常[{}][{}]", ErrorEnum.SERVLET_ERROR.getCode(), e.getMessage());
+        log.warn("请求分发异常[{}][{}]", ErrorEnum.SERVLET_ERROR.getCode(), e.getMessage());
         return Result.fail(ErrorEnum.SERVLET_ERROR);
     }
 
@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BindException.class)
     public Result handleBindException(BindException e) {
-        log.info("参数绑定异常[{}][{}]", ErrorEnum.BIND_ERROR.getCode(), e.getMessage());
+        log.warn("参数绑定异常[{}][{}]", ErrorEnum.BIND_ERROR.getCode(), e.getMessage());
         return Result.fail(ErrorEnum.BIND_ERROR);
     }
 
@@ -88,7 +88,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public Result handleValidException(MethodArgumentNotValidException e) {
-        log.info("数据校验异常[{}][{}]", ErrorEnum.VALID_ERROR.getCode(), wrapperBindingResult(e.getBindingResult()));
+        log.warn("数据校验异常[{}][{}]", ErrorEnum.VALID_ERROR.getCode(), wrapperBindingResult(e.getBindingResult()));
         return Result.fail(ErrorEnum.VALID_ERROR);
     }
 
@@ -107,7 +107,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public Result handleSQLIntegrityConstraintViolationException(SQLIntegrityConstraintViolationException e) {
-        log.info("数据库异常[{}][请勿重复提交][{}]", ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES.getCode(), e.getMessage());
+        log.warn("数据库异常[{}][请勿重复提交][{}]", ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES.getCode(), e.getMessage());
         return Result.fail(ErrorEnum.DO_NOT_SUBMIT_FOR_MANY_TIMES);
     }
 
@@ -120,7 +120,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(FooException.class)
     public Result handleFooException(FooException e) {
-        log.info("业务异常[{}][{}]", e.getCode(), e.getMsg());
+        log.warn("业务异常[{}][{}]", e.getCode(), e.getMsg());
         return Result.fail(e.getCode(), e.getMsg());
     }
 

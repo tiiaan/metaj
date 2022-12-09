@@ -84,6 +84,25 @@ public class IssueController {
         return issueService.queryIssueById(id);
     }
 
+
+    //@GetMapping("/query/of/watching")
+    //public Result queryIssuesOfWatching(@RequestParam("lastId") Long lastId,
+    //                                    @RequestParam(value = "offset", defaultValue = "0") Integer offset) {
+    //    return issueService.queryIssuesOfWatching(lastId, offset);
+    //}
+
+
+    @GetMapping("/query/of/watching")
+    public Result queryIssuesOfWatching(@RequestParam(value = "curr", defaultValue = "1") Integer curr) {
+        return issueService.queryIssuesOfWatching(curr);
+    }
+
+
+    @GetMapping("/query/of/watching/count")
+    public Result queryIssuesCountOfWatching() {
+        return issueService.queryIssuesCountOfWatching();
+    }
+
     //@PutMapping("/track/{id}")
     //public Result trackIssue(@PathVariable("id") Long id) {
     //    return issueService.trackIssue(id);

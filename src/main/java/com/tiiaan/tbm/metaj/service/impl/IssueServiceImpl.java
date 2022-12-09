@@ -4,6 +4,7 @@ import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.lang.UUID;
 import cn.hutool.core.util.StrUtil;
 import com.tiiaan.tbm.metaj.dto.Result;
+import com.tiiaan.tbm.metaj.dto.ScrollResult;
 import com.tiiaan.tbm.metaj.dto.TryAcquireResultDTO;
 import com.tiiaan.tbm.metaj.entity.Issue;
 import com.tiiaan.tbm.metaj.event.IssueClosedEvent;
@@ -19,6 +20,7 @@ import com.tiiaan.tbm.metaj.util.SnowflakeId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -26,8 +28,10 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import static com.tiiaan.tbm.metaj.common.RedisConstants.*;
 import static com.tiiaan.tbm.metaj.common.SysConstants.*;
@@ -229,6 +233,88 @@ public class IssueServiceImpl extends ServiceImpl<IssueMapper, Issue> implements
     @Override
     public Result queryIssueById(Long id) {
         return Result.ok(getById(id));
+    }
+
+
+    /**
+     * 查询feed收件箱中的报告
+     * @param lastId
+     * @param offset
+     * @return com.tiiaan.tbm.metaj.dto.Result
+     * @author tiiaan Email:tiiaan.w@gmail.com
+     */
+    //@Override
+    //public Result queryIssuesOfWatching(Long lastId, Integer offset) {
+    //    Long userId = UserHolder.getUser().getId();
+    //    String feedKey = FEED_KEY + userId;
+    //    Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet()
+    //            .reverseRangeByScoreWithScores(feedKey, 0, lastId, offset, FEED_PAGE_SIZE);
+    //    if (typedTuples == null || typedTuples.isEmpty()) {
+    //        return Result.ok();
+    //    }
+    //    ArrayList<Long> ids = new ArrayList<>(typedTuples.size());
+    //    long minTime = 0;
+    //    int os = 1;
+    //    for (ZSetOperations.TypedTuple<String> tuple : typedTuples) {
+    //        ids.add(Long.valueOf(tuple.getValue()));
+    //        long time = tuple.getScore().longValue();
+    //        if (time == minTime) {
+    //            os++;
+    //        } else {
+    //            minTime = time;
+    //            os = 1;
+    //        }
+    //    }
+    //    String join = StrUtil.join(",", ids);
+    //    List<Issue> issues = this.query().in("id", ids).last("ORDER BY FIELD(id," + join + ")").list();
+    //    ScrollResult scrollResult = new ScrollResult();
+    //    scrollResult.setList(issues);
+    //    scrollResult.setOffset(os);
+    //    scrollResult.setMinTime(minTime);
+    //    return Result.ok(scrollResult);
+    //}
+
+    @Override
+    public Result queryIssuesOfWatching(Integer curr) {
+        Long userId = UserHolder.getUser().getId();
+        String feedKey = FEED_KEY + userId;
+        Long start = (long) (curr - 1) * FEED_PAGE_SIZE;
+        Set<String> ids = stringRedisTemplate.opsForZSet().reverseRange(feedKey, start, start + FEED_PAGE_SIZE - 1);
+
+        //Set<ZSetOperations.TypedTuple<String>> typedTuples = stringRedisTemplate.opsForZSet()
+        //        .reverseRangeByScoreWithScores(feedKey, 0, lastId, offset, FEED_PAGE_SIZE);
+        //if (typedTuples == null || typedTuples.isEmpty()) {
+        //    return Result.ok();
+        //}
+        //ArrayList<Long> ids = new ArrayList<>(typedTuples.size());
+        //long minTime = 0;
+        //int os = 1;
+        //for (ZSetOperations.TypedTuple<String> tuple : typedTuples) {
+        //    ids.add(Long.valueOf(tuple.getValue()));
+        //    long time = tuple.getScore().longValue();
+        //    if (time == minTime) {
+        //        os++;
+        //    } else {
+        //        minTime = time;
+        //        os = 1;
+        //    }
+        //}
+        String join = StrUtil.join(",", ids);
+        List<Issue> issues = this.query().in("id", ids).last("ORDER BY FIELD(id," + join + ")").list();
+        //ScrollResult scrollResult = new ScrollResult();
+        //scrollResult.setList(issues);
+        //scrollResult.setOffset(os);
+        //scrollResult.setMinTime(minTime);
+        return Result.ok(issues);
+    }
+
+
+    @Override
+    public Result queryIssuesCountOfWatching() {
+        Long userId = UserHolder.getUser().getId();
+        String feedKey = FEED_KEY + userId;
+        Long size = stringRedisTemplate.opsForZSet().size(feedKey);
+        return Result.ok(size);
     }
 
 

@@ -58,5 +58,6 @@ public class RedisConstants {
     public static final Long HI_PUBLISH_LOCK_TTL = 1800L;
 
     public static final String FEED_KEY = "feed:";
+    public static final Integer FEED_PAGE_SIZE = 10;
 
 }
